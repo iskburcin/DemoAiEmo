@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "240478960480",
+    "project_id": "aiemo-704b0",
+    "storage_bucket": "aiemo-704b0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:240478960480:android:a70149d39de3b062c5bc05",
+        "android_client_info": {
+          "package_name": "com.example.demoaiemo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyASxnpL35QazOgFy-j6WhYK4Ao1xbT3OfA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
