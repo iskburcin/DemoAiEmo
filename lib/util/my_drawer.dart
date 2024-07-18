@@ -11,19 +11,19 @@ class MyDrawer extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              DrawerHeader(
-                child: Icon(
-                  Icons.favorite_border_outlined,
-                  color: Theme.of(context).colorScheme.inversePrimary
-                  ),
-              ),
-
               Column(
                 children: [
+                  DrawerHeader(
+                    child: Icon(
+                      Icons.favorite_border_outlined,
+                      color: Theme.of(context).colorScheme.inversePrimary
+                      ),
+                  ),
+
                   ListTile(
                     textColor: Colors.white,
                     leading: Icon(
-                      Icons.person, 
+                      Icons.home, 
                       color: Theme.of(context).colorScheme.inversePrimary,
                       ),
                     title: const Text("A N A S A Y F A"),
@@ -70,7 +70,8 @@ class MyDrawer extends StatelessWidget {
                   Navigator.pop(context);
                   logout();
                 },
-              ), ]),
+              ), 
+            ]),
       );
   }
 

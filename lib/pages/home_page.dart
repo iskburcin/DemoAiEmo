@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
                 margin: const EdgeInsets.symmetric(horizontal:25),
                 width: MediaQuery.sizeOf(context).width ,
                 padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(color: Colors.grey[350]),
+                decoration: BoxDecoration(color: const Color.fromARGB(255, 184, 14, 14)),
                 child:const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [

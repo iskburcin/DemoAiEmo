@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demoaiemo/system/helpers.dart';
 import 'package:demoaiemo/util/my_botton.dart';
 import 'package:demoaiemo/util/my_textfields.dart';
@@ -47,7 +48,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
               const SizedBox(height: 10,),
 
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("Hesabın var mu?",
@@ -84,8 +85,11 @@ class _RegisterPageState extends State<RegisterPage> {
         UserCredential? userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
         
+        //kullanıcı dosyası oluşturup firestore a ekle
+        createUserDocument(userCredential);
+
         //loading circle çıkar
-        Navigator.pop(context);
+        if(context.mounted) Navigator.pop(context);
       } on FirebaseAuthException catch (e){    
         //loading circle çıkar
         Navigator.pop(context);
@@ -157,5 +161,16 @@ class _RegisterPageState extends State<RegisterPage> {
         const SizedBox(height: 10,),
         ],
     );
+  }
+  
+  Future<void> createUserDocument(UserCredential? userCredential) async{
+    if(userCredential != null && userCredential.user != null){
+      await FirebaseFirestore.instance
+      .collection("Users").doc(userCredential.user!.email).set({
+        'Email': userCredential.user!.email,
+        'Gender': genderController.text,
+        'Age': ageController.text,
+        'Occupation': occupationController.text 
+      });}
   }
 }
