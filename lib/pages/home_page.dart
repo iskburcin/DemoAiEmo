@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -22,6 +23,11 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("AIEmo"),
+      actions: [
+        IconButton(
+                  onPressed: logout,
+                  icon: const Icon(Icons.logout),),
+      ],
       ),
       
       body: Column(
@@ -99,18 +105,21 @@ class _HomePageState extends State<HomePage> {
               ListTile(
                 textColor: Colors.white,
                 contentPadding: EdgeInsets.only(left: 35),
-                leading: const Icon(Icons.exit_to_app, color: Colors.white),
+                leading: IconButton(
+                  onPressed: logout,
+                  icon: Icon(Icons.logout),),
                 title: const Text("Çıkış"),
                 onTap: (){
                   Navigator.pop(context);
                   Navigator.pushNamed(context, '/loginpage');
                 },
-              ),
-
-             
-            ]),
+              ), ]),
       ),
     );
+  }
+
+  void logout(){
+    FirebaseAuth.instance.signOut();
   }
 
 

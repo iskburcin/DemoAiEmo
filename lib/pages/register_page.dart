@@ -78,19 +78,19 @@ class _RegisterPageState extends State<RegisterPage> {
     if(passwordConfirmController.text != passwordController.text) {
       Navigator.pop(context);  //loading circlı çıkar
       displayMessageToUser("Şifre eşleşmedi!",context);  //error ver
-    }
-
-    //kullanıcı oluştur
-    try{
-      UserCredential? userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailController.text, password: passwordController.text);
-      
-      //loading circle çıkar
-      Navigator.pop(context);
-    } on FirebaseAuthException catch (e){    
-      //loading circle çıkar
-      Navigator.pop(context);
-      displayMessageToUser(e.code, context);
+    }else{
+      //kullanıcı oluştur
+      try{
+        UserCredential? userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text, password: passwordController.text);
+        
+        //loading circle çıkar
+        Navigator.pop(context);
+      } on FirebaseAuthException catch (e){    
+        //loading circle çıkar
+        Navigator.pop(context);
+        displayMessageToUser(e.code, context);
+      }
     }
 
   }

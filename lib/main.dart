@@ -1,4 +1,5 @@
 // import 'package:demoaiemo/pages/camera_page.dart';
+import 'package:demoaiemo/auth/auth_page.dart';
 import 'package:demoaiemo/auth/login_or_register.dart';
 import 'package:demoaiemo/pages/camera_page.dart';
 import 'package:demoaiemo/pages/home_page.dart';
@@ -31,12 +32,12 @@ class MainApp extends StatelessWidget {
   Widget build(context) {
     return MaterialApp(
        debugShowCheckedModeBanner: false,
-      home: const LoginOrRegister(), //app knows that what it should show on the screen
+      home: const AuthPage(), //app knows that what it should show on the screen
       theme: lightMode,
       darkTheme: darkMode,
       routes: {
         '/homepage':(context) => HomePage(),
-        //'/loginpage': (context) => LoginPage(),  
+        // '/loginpage': (context) => LoginPage(),  
         '/camerapage':(context) => const CameraPage(),
         '/profilepage':(context) => ProfilePage( ),
         '/settingpage': (context) => SettingPage()
