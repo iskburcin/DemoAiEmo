@@ -1,3 +1,4 @@
+import 'package:demoaiemo/system/helpers.dart';
 import 'package:demoaiemo/util/my_botton.dart';
 import 'package:demoaiemo/util/my_textfields.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -63,12 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void displayMessageToUser(String message, BuildContext context){
-    showDialog(context: context, builder: (context) => AlertDialog(
-      title: Text(message),
-    )
-    );
-  }
+
   void registerUser()async{
     //loading circlı göster
     showDialog(
@@ -91,7 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
       
       //loading circle çıkar
       Navigator.pop(context);
-    } on FirebaseAuthException catch (e){
+    } on FirebaseAuthException catch (e){    
       //loading circle çıkar
       Navigator.pop(context);
       displayMessageToUser(e.code, context);

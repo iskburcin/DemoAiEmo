@@ -2,6 +2,7 @@
 import 'package:demoaiemo/auth/login_or_register.dart';
 import 'package:demoaiemo/pages/camera_page.dart';
 import 'package:demoaiemo/pages/home_page.dart';
+import 'package:demoaiemo/pages/login_page.dart';
 import 'package:demoaiemo/pages/profile_page.dart';
 import 'package:demoaiemo/pages/setting_page.dart';
 import 'package:demoaiemo/theme/dark_mode.dart';

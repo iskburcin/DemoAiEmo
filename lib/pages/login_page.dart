@@ -1,5 +1,7 @@
+import 'package:demoaiemo/system/helpers.dart';
 import 'package:demoaiemo/util/my_botton.dart';
 import 'package:demoaiemo/util/my_textfields.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -60,7 +62,19 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void login(){}
+  void login() async {
+    showDialog(context: context, builder:(context)=> const Center(
+      child: CircularProgressIndicator(),
+    ));
+
+    try{
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailController.text, password: passwordController.text);
+      if(context.mounted) Navigator.pop(context);
+    } on FirebaseAuthException catch (e){
+      Navigator.pop(context);
+      displayMessageToUser(e.code,context);
+    }
+  }
 
   Widget _title(){
     return const SizedBox(
