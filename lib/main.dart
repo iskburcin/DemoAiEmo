@@ -37,8 +37,7 @@ class MainApp extends StatelessWidget {
       darkTheme: darkMode,
       routes: {
         '/homepage':(context) => HomePage(),
-        // '/loginpage': (context) => LoginPage(),  
-        '/camerapage':(context) => const CameraPage(),
+        '/camerapage':(context) => CameraPage(),
         '/profilepage':(context) => ProfilePage( ),
         '/settingpage': (context) => SettingPage()
       },
