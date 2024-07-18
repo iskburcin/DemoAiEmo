@@ -1,19 +1,25 @@
 import 'package:demoaiemo/util/my_botton.dart';
 import 'package:demoaiemo/util/my_textfields.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   final void Function()? onTap;
 
-  RegisterPage({super.key, required this.onTap});
 
-  final TextEditingController usernameController = TextEditingController();
+  const RegisterPage({super.key, required this.onTap});
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController passwordConfirmController = TextEditingController();
   final TextEditingController genderController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController occupationController = TextEditingController();
-
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +42,7 @@ class RegisterPage extends StatelessWidget {
 
               const SizedBox(height: 10,),
 
-              MyBotton(text: "Kaydol", onTap: register,),
+              MyBotton(text: "Kaydol", onTap: registerUser,),
 
               const SizedBox(height: 10,),
 
@@ -46,7 +52,7 @@ class RegisterPage extends StatelessWidget {
                   Text("Hesabın var mu?",
                   style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),),
                   GestureDetector(
-                    onTap: onTap,
+                    onTap: widget.onTap,
                     child: Text("Giriş Yap", style: TextStyle(fontWeight: FontWeight.bold),))
                 ],
               ),
@@ -57,7 +63,41 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
-  void register(){}
+  void displayMessageToUser(String message, BuildContext context){
+    showDialog(context: context, builder: (context) => AlertDialog(
+      title: Text(message),
+    )
+    );
+  }
+  void registerUser()async{
+    //loading circlı göster
+    showDialog(
+      context: context, 
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      )
+    );
+
+    //şifrelerin eşleştiğini checkle
+    if(passwordConfirmController.text != passwordController.text) {
+      Navigator.pop(context);  //loading circlı çıkar
+      displayMessageToUser("Şifre eşleşmedi!",context);  //error ver
+    }
+
+    //kullanıcı oluştur
+    try{
+      UserCredential? userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text, password: passwordController.text);
+      
+      //loading circle çıkar
+      Navigator.pop(context);
+    } on FirebaseAuthException catch (e){
+      //loading circle çıkar
+      Navigator.pop(context);
+      displayMessageToUser(e.code, context);
+    }
+
+  }
 
   Widget _title(){
     return const SizedBox(
@@ -75,7 +115,7 @@ class RegisterPage extends StatelessWidget {
         MyTextfield(
           hintText: "Mail Adresiniz",
           obscureText: false,
-          controller: usernameController,
+          controller: emailController,
         ),
 
         const SizedBox(height: 10,),

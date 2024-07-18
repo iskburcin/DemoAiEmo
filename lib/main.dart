@@ -14,14 +14,13 @@ import 'firebase_options.dart';
 
 List<CameraDescription>? cameras;
 
-
 Future<void> main() async {
-//   await Firebase.initializeApp(
-//     options: DefaultFirebaseOptions.currentPlatform,
-// );
-  runApp(const MainApp());
   WidgetsFlutterBinding.ensureInitialized();
-   cameras = await availableCameras();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );  
+  runApp(const MainApp());
+  cameras = await availableCameras();
 }
 
 class MainApp extends StatelessWidget {
@@ -31,7 +30,7 @@ class MainApp extends StatelessWidget {
   Widget build(context) {
     return MaterialApp(
        debugShowCheckedModeBanner: false,
-      home: HomePage(), //app knows that what it should show on the screen
+      home: const LoginOrRegister(), //app knows that what it should show on the screen
       theme: lightMode,
       darkTheme: darkMode,
       routes: {

@@ -2,12 +2,17 @@ import 'package:demoaiemo/util/my_botton.dart';
 import 'package:demoaiemo/util/my_textfields.dart';
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   final void Function()? onTap;
 
-  LoginPage({super.key, required this.onTap});
+  const LoginPage({super.key, required this.onTap});
 
-  final TextEditingController usernameController = TextEditingController();
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   @override
@@ -44,7 +49,7 @@ class LoginPage extends StatelessWidget {
                   Text("Hesabın yok mu?",
                   style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),),
                   GestureDetector(
-                    onTap: onTap ,
+                    onTap: widget.onTap ,
                     child: Text("Kaydol", style: TextStyle(fontWeight: FontWeight.bold),))
                 ],
               ),
@@ -73,7 +78,7 @@ class LoginPage extends StatelessWidget {
         MyTextfield(
           hintText: "Mail Adresiniz",
           obscureText: false,
-          controller: usernameController,
+          controller: emailController,
         ),
 
         const SizedBox(height: 10,),
@@ -88,16 +93,4 @@ class LoginPage extends StatelessWidget {
         ],
     );
   }
-  // Widget _loginbutton(){
-  //   return SizedBox(
-  //     child: ElevatedButton(
-  //       onPressed: (){
-  //         if (_loginformkey.currentState?.validate() ?? false){
-  //           Navigator.pushNamed(context, '/homepage');
-  //           }
-  //         }, 
-  //       child: const Text("Login"),
-  //       ),
-  //   );
-  // }
 }
