@@ -16,7 +16,7 @@ class CameraPage extends StatefulWidget {
 class _CameraPageState extends State<CameraPage> {
   CameraImage? cameraImage;
   CameraController? cameraController;
-  int selectedCamIdx = 0;
+  int selectedCamIdx = 1;
   String emotion = "neutral"; //default duygu
   Map<String, int> emotionCounts = {
     "Mutlu": 0,
@@ -104,7 +104,7 @@ class _CameraPageState extends State<CameraPage> {
   
   void switchCamera() async {
     selectedCamIdx = (selectedCamIdx +1)%cameras!.length;
-    await cameraController?.dispose();
+    // await cameraController?.dispose();
     cameraController = CameraController(cameras![selectedCamIdx], ResolutionPreset.max);
     await cameraController?.initialize();
     
