@@ -9,7 +9,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  
   int selectedIndex = 0;  
   void navigateBottomBarToPages(int index){
     setState(() {
@@ -23,7 +22,6 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("AIEmo"),
       ),
-      
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
           // padding:const EdgeInsets.only(left: 120,right: 120,top: 120),
@@ -34,16 +32,18 @@ class _HomePageState extends State<HomePage> {
                 margin: const EdgeInsets.symmetric(horizontal:25),
                 width: MediaQuery.sizeOf(context).width ,
                 padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(color: const Color.fromARGB(255, 184, 14, 14)),
+                decoration: const BoxDecoration(color: const Color.fromARGB(255, 184, 14, 14)),
                 child:const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text("Merhabalar!!  "),
+                    Text("Hello BRM !!  ",style: TextStyle(fontSize: 30),),
                     Icon(Icons.waving_hand_outlined)
                   ],
                 ),
               ),
-              const Text("Burada AIEmo'yu tanıtacak textler bulunacak"),
+              Container(height: 70,),
+              const Text("Burada AIEmo'yu tanıtacak textler bulunacak",
+                style: TextStyle(fontSize: 20),),
               ],),
 
            Container(

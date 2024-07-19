@@ -1,4 +1,4 @@
-0 happy
-1 sad
-2 angry
-3 notr
+Mutlu
+Üzgün
+Öfkeli
+Nötr

@@ -1,3 +1,4 @@
+import 'package:demoaiemo/pages/setting_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -5,7 +6,7 @@ class MyDrawer extends StatelessWidget {
   const MyDrawer({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(context) {
     return Drawer(
         backgroundColor: Theme.of(context).colorScheme.surface,
         child: Column(
@@ -21,7 +22,7 @@ class MyDrawer extends StatelessWidget {
                   ),
 
                   ListTile(
-                    textColor: Colors.white,
+                    textColor: Theme.of(context).colorScheme.inversePrimary,
                     leading: Icon(
                       Icons.home, 
                       color: Theme.of(context).colorScheme.inversePrimary,
@@ -35,7 +36,7 @@ class MyDrawer extends StatelessWidget {
                   ),
                   
                   ListTile(
-                    textColor: Colors.white,
+                    textColor: Theme.of(context).colorScheme.inversePrimary,
                     leading: Icon(
                       Icons.person, 
                       color: Theme.of(context).colorScheme.inversePrimary,
@@ -49,22 +50,25 @@ class MyDrawer extends StatelessWidget {
                   ),
                   
                   ListTile(
-                    textColor: Colors.white,
+                    textColor: Theme.of(context).colorScheme.inversePrimary,
                     contentPadding: EdgeInsets.only(left: 35),
-                    leading: const Icon(Icons.settings, color: Colors.white),
+                    leading: Icon(
+                      Icons.settings, 
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
                     title: const Text("A Y A R L A R"),
                     onTap: (){
                       Navigator.pop(context);
-                      Navigator.pushNamed(context, '/settingpage');
+                      Navigator.pushNamed(context,'/settingpage');
                     },
                   ),
                 ],
               ),
 
               ListTile(
-                textColor: Colors.white,
+                textColor: Theme.of(context).colorScheme.inversePrimary,
                 contentPadding: EdgeInsets.only(left: 35),
-                leading: Icon(Icons.logout),
+                leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.inversePrimary,),
                 title: const Text("Ç I K I Ş"),
                 onTap: (){
                   Navigator.pop(context);

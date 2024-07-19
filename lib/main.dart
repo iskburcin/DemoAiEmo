@@ -3,11 +3,11 @@ import 'package:demoaiemo/auth/auth_page.dart';
 import 'package:demoaiemo/pages/home_page.dart';
 import 'package:demoaiemo/pages/profile_page.dart';
 import 'package:demoaiemo/pages/setting_page.dart';
-import 'package:demoaiemo/theme/dark_mode.dart';
-import 'package:demoaiemo/theme/light_mode.dart';
+import 'package:demoaiemo/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 
@@ -18,27 +18,32 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );  
-  runApp(const MainApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context)=>ThemeProvider(),
+      child: const MainApp())
+      );
   cameras = await availableCameras();
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  const MainApp({super.key,});
 
   @override
-  Widget build(context) {
+  Widget build(BuildContext context) {
     return MaterialApp(
        debugShowCheckedModeBanner: false,
       home: const AuthPage(), //app knows that what it should show on the screen
-      theme: lightMode,
-      darkTheme: darkMode,
+      theme: Provider.of<ThemeProvider>(context).themeData,
       routes: {
-        '/homepage':(context) => HomePage(),
-        '/camerapage':(context) => CameraPage(),
+        '/homepage':(context) => const HomePage(),
+        '/camerapage':(context) => const CameraPage(),
         '/profilepage':(context) => ProfilePage( ),
-        '/settingpage': (context) => SettingPage()
+        '/settingpage': (context) => const SettingPage()
       },
     );
    }
+
+
 }
 

@@ -1,5 +1,4 @@
-import 'dart:typed_data';
-
+import 'package:demoaiemo/pages/suggestion_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tflite_v2/tflite_v2.dart';
@@ -17,20 +16,33 @@ class CameraPage extends StatefulWidget {
 class _CameraPageState extends State<CameraPage> {
   CameraImage? cameraImage;
   CameraController? cameraController;
-  String output = 'boş';
+  int selectedCamIdx = 0;
+  String emotion = "neutral"; //default duygu
+  Map<String, int> emotionCounts = {
+    "Mutlu": 0,
+    "Üzgün": 0,
+    "Öfkeli": 0,
+    "Nötr": 0,
+  };
+
 
   @override
   void initState() {
     super.initState();
+    // get available cameras
     loadCamera();
   }
-
+//  Future<void> _getAvailableCameras() async{
+//    WidgetsFlutterBinding.ensureInitialized();
+//    cameras = await availableCameras();
+//    loadCamera(cameras!.first);
+//  }
   loadCamera() async {
     if (cameras == null || cameras!.isEmpty) {
       print('No camera available');
       return;
     }
-    cameraController = CameraController(cameras![0], ResolutionPreset.medium);
+    cameraController = CameraController(cameras![selectedCamIdx], ResolutionPreset.max);
     await cameraController!.initialize();
 
     if (!mounted) return;
@@ -42,7 +54,6 @@ class _CameraPageState extends State<CameraPage> {
       }).catchError((error) => print(error));
     });
   }
-
 
   Uint8List convertPlaneToBytes(Plane plane) {
     final WriteBuffer allBytes = WriteBuffer();
@@ -73,32 +84,38 @@ class _CameraPageState extends State<CameraPage> {
       if (predictions != null) {
         for (var element in predictions) {
           setState(() {
-            output = element['label'];
+            emotion = element['label'];
+            emotionCounts[emotion] = (emotionCounts[emotion] ?? 0) +1;
           });
         }
+        if (emotionCounts[emotion]! >= 10) { // Majority detected, for example after 10 frames
+        Navigator.pop(context);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SuggestionPage(emotion: emotion),
+          ),
+        );
+      }
+
       }
     }
   }
-  makePrediction(input) async {
-    var predictions = await Tflite.runModelOnFrame(
-      bytesList: input,
-      imageHeight: cameraImage!.height,
-        imageWidth: cameraImage!.width,
-        imageMean: 127.5,
-        imageStd: 127.5,
-        rotation: 90,
-        numResults: 2,
-        threshold: 0.1,
-        asynch: true
-    );
-    if(predictions != null){
-      for(var elem in predictions){
-        setState(() {
-          output = elem['labels.txt'];
-        });
-      }
-    }
-    return Text(output);
+  
+  void switchCamera() async {
+    selectedCamIdx = (selectedCamIdx +1)%cameras!.length;
+    await cameraController?.dispose();
+    cameraController = CameraController(cameras![selectedCamIdx], ResolutionPreset.max);
+    await cameraController?.initialize();
+    
+    if (!mounted) return;
+    setState(() {
+      cameraController!.startImageStream((imageStream) async {
+        cameraImage = imageStream;
+        await loadmodel();
+        await runModel(cameraImage);
+      }).catchError((error) => print(error));
+    });
   }
 
   loadmodel() async {
@@ -115,44 +132,32 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        title: Text("Camera Page"),
+        title: Text("Duygu Analizi"),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: SizedBox(
-              height: 600, //changed to check
-              width: 400,
-              child: cameraController!.value.isInitialized
-                  ?  AspectRatio(
-                      aspectRatio: cameraController!.value.aspectRatio,
-                      child: CameraPreview(cameraController!),
-                    ): Container(),
-                    ),
-          ),
-          Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-              Text(output,
-                style: const TextStyle(
-                fontWeight: FontWeight.bold, 
-                fontSize: 30),
+          CameraPreview(cameraController!),
+          Positioned(
+            bottom: 20,
+            left: 20,
+            child: Text(
+              "Emotion: $emotion",
+              style: TextStyle(
+                fontSize: 24,
+                color: Theme.of(context).colorScheme.inversePrimary,
+              ),
             ),
-            Column(mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text("output"),
-              ],
-            )
-              ],
-            )
-            
+          ),
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: IconButton(
+              icon: Icon(Icons.switch_camera, 
+              color: Theme.of(context).colorScheme.inversePrimary),
+              onPressed: switchCamera,
+            ),
           ),
         ],
       ),

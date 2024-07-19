@@ -18,7 +18,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profilim"),
+        title: const Text("Profilim"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         elevation: 0,
         ),
@@ -51,14 +51,14 @@ class ProfilePage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       color: Theme.of(context).colorScheme.primary
                     ),
-                    padding: EdgeInsets.all(25),
-                    child: Icon(Icons.person, size: 64,),
+                    padding: const EdgeInsets.all(25),
+                    child: const Icon(Icons.person, size: 64,),
                   ),
 
                   const SizedBox(height: 10,),
 
-                  Text("Email: ${user!['Email']}",
-                    style: TextStyle(
+                  Text("Email: ${user?['Email']}",
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold
                     ),
@@ -66,8 +66,8 @@ class ProfilePage extends StatelessWidget {
                   
                   const SizedBox(height: 10,),
 
-                  Text("Yaş: ${user!['Age']}",
-                    style: TextStyle(
+                  Text("Yaş: ${user?['Age']}",
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold
                     ),
@@ -75,8 +75,8 @@ class ProfilePage extends StatelessWidget {
                   
                   const SizedBox(height: 10,),
 
-                  Text("Cinsiyet: ${user!['Gender']}",
-                    style: TextStyle(
+                  Text("Cinsiyet: ${user?['Gender']}",
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold
                     ),
@@ -84,8 +84,8 @@ class ProfilePage extends StatelessWidget {
                   
                   const SizedBox(height: 10,),
 
-                  Text("Meslek: ${user!['Occupation']}",
-                    style: TextStyle(
+                  Text("Meslek: ${user?['Occupation']}",
+                    style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold
                     ),
@@ -93,7 +93,7 @@ class ProfilePage extends StatelessWidget {
                 ],
               );
             }else {
-              return Text("No data");
+              return const Text("No data");
             }
           }
         ),]
