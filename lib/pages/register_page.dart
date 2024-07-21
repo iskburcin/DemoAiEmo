@@ -140,37 +140,11 @@ class _RegisterPageState extends State<RegisterPage> {
         
         const SizedBox(height: 10,),
 
-        Container(  
-            child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              ListTile(
-                title: const Text('Kadın'),
-                leading: Radio<int>(
-                  value: 1,
-                  groupValue: selectedOption,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedOption = value!;
-                    });
-                  },
-                ),
-              ),
-              ListTile(
-                title: const Text('Erkek'),
-                leading: Radio<int>(
-                  value: 2,
-                  groupValue: selectedOption,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedOption = value!;
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),  
+        MyTextfield(
+          hintText: "Cinsiyet",
+          obscureText: false,
+          controller: genderController,
+        ),
         
         const SizedBox(height: 10,),
 
