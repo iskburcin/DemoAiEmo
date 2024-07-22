@@ -3,10 +3,10 @@ import 'package:provider/provider.dart';
 class GenderProvider with ChangeNotifier {
   bool _isMale = true;
 
-  bool get isMale => this._isMale;
+  bool get isMale => _isMale;
 
   set isMale(bool value) {
-    this._isMale = value;
+    _isMale = value;
     notifyListeners();
   }
 
@@ -21,7 +21,7 @@ class GenderProvider with ChangeNotifier {
         debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: Container(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 20,
             ),
             child: Column(
@@ -36,7 +36,7 @@ class GenderProvider with ChangeNotifier {
                         color: genderProvider.color),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50,
                 ),
                 Row(
@@ -79,7 +79,7 @@ class GenderProvider with ChangeNotifier {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 20,
                     ),
                     // FEMALE

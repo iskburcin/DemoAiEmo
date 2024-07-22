@@ -17,7 +17,7 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Setting Page"),
+        title: const Text("Setting Page"),
         ),
       body: Center(
           child: Padding(

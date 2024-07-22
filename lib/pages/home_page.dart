@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
                 margin: const EdgeInsets.symmetric(horizontal:25),
                 width: MediaQuery.sizeOf(context).width ,
                 padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(color: const Color.fromARGB(255, 184, 14, 14)),
+                decoration: const BoxDecoration(color: Color.fromARGB(255, 184, 14, 14)),
                 child:const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -51,8 +51,9 @@ class _HomePageState extends State<HomePage> {
             height: 100,
             width: 100,
              child: FloatingActionButton( 
-              onPressed: (){
-                Navigator.pushNamed(context, '/camerapage');}, 
+              onPressed: () async {
+                Navigator.pushNamed(context, '/camerapage');
+                }, 
               backgroundColor:Colors.black,
               hoverColor:  Colors.red[700],
               child: const Icon(

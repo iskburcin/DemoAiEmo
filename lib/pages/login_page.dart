@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),),
                   GestureDetector(
                     onTap: widget.onTap ,
-                    child: Text("Kaydol", style: TextStyle(fontWeight: FontWeight.bold),))
+                    child: const Text("Kaydol", style: TextStyle(fontWeight: FontWeight.bold),))
                 ],
               ),
             ],

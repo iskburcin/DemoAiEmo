@@ -9,7 +9,7 @@ class SuggestionPage extends StatelessWidget {
     String emotion= args["emotion"];
 
     return Scaffold(
-      appBar: AppBar(title: Text("Öneri Sayfası")),
+      appBar: AppBar(title: const Text("Öneri Sayfası")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -17,12 +17,12 @@ class SuggestionPage extends StatelessWidget {
           children: [
             Text(
               "Algılanan Duygu: $emotion",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(
               _getSuggestionsForEmotion(emotion),
-              style: TextStyle(fontSize: 18),
+              style: const TextStyle(fontSize: 18),
             ),
           ],
         ),

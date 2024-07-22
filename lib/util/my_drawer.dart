@@ -27,7 +27,7 @@ class MyDrawer extends StatelessWidget {
                       color: Theme.of(context).colorScheme.inversePrimary,
                       ),
                     title: const Text("A N A S A Y F A"),
-                    contentPadding: EdgeInsets.only(left: 35),
+                    contentPadding: const EdgeInsets.only(left: 35),
                     onTap: (){
                       //zaten homepage de, sadece drawer ı popla
                       Navigator.pop(context);
@@ -41,7 +41,7 @@ class MyDrawer extends StatelessWidget {
                       color: Theme.of(context).colorScheme.inversePrimary,
                       ),
                     title: const Text("P R O F İ L E"),
-                    contentPadding: EdgeInsets.only(left: 35),
+                    contentPadding: const EdgeInsets.only(left: 35),
                     onTap: (){
                       Navigator.pop(context);
                       Navigator.pushNamed(context, '/profilepage');
@@ -50,7 +50,7 @@ class MyDrawer extends StatelessWidget {
                   
                   ListTile(
                     textColor: Theme.of(context).colorScheme.inversePrimary,
-                    contentPadding: EdgeInsets.only(left: 35),
+                    contentPadding: const EdgeInsets.only(left: 35),
                     leading: Icon(
                       Icons.settings, 
                       color: Theme.of(context).colorScheme.inversePrimary,
@@ -66,7 +66,7 @@ class MyDrawer extends StatelessWidget {
 
               ListTile(
                 textColor: Theme.of(context).colorScheme.inversePrimary,
-                contentPadding: EdgeInsets.only(left: 35),
+                contentPadding: const EdgeInsets.only(left: 35),
                 leading: Icon(Icons.logout, color: Theme.of(context).colorScheme.inversePrimary,),
                 title: const Text("Ç I K I Ş"),
                 onTap: (){

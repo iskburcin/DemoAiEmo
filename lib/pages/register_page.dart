@@ -58,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       style: TextStyle(color: Theme.of(context).colorScheme.inversePrimary),),
                       GestureDetector(
                         onTap: widget.onTap,
-                        child: Text("Giriş Yap", style: TextStyle(fontWeight: FontWeight.bold),))
+                        child: const Text("Giriş Yap", style: TextStyle(fontWeight: FontWeight.bold),))
                     ],
                   ),
                 ]

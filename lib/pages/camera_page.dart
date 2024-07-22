@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite_v2/tflite_v2.dart';
 import 'package:camera/camera.dart';
@@ -26,10 +25,9 @@ class _CameraPageState extends State<CameraPage> {
     "Öfkeli": 0,
     "Nötr": 0,
   };
-  bool isModelBusy = false; //başlangıçta model meşgul değil 
+  bool isModelBusy = false; //başlangıçta model meşgul değil
   bool isCameraInitialized = false; // daha kamera başlamadı
 
-  
   List<String>? labels;
   @override
   void initState() {
@@ -40,15 +38,17 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   Future<CameraController?> loadCamera() async {
-    cameraController = CameraController(
-        cameras![selectedCamIdx], ResolutionPreset.max, //başlangıç olarak ön kamera açık
+    cameraController = CameraController(cameras![selectedCamIdx],
+        ResolutionPreset.max, //başlangıç olarak ön kamera açık
         enableAudio: false);
     await cameraController!.initialize(); //kamerayı başlat
     isCameraInitialized = true;
     setState(() {
-      cameraController!.startImageStream((imageStream) async { //kameradan resimleri al
+      cameraController!.startImageStream((imageStream) async {
+        //kameradan resimleri al
         if (!isModelBusy) {
-          cameraImage = imageStream; //modele java formatında resim yüklemek için
+          cameraImage =
+              imageStream; //modele java formatında resim yüklemek için
           runModel(cameraImage);
         }
       });
@@ -70,18 +70,11 @@ class _CameraPageState extends State<CameraPage> {
     );
   }
 
-  Future<void> loadLabels() async {
-    final labelTxt = await rootBundle.loadString("assets/labels.txt");
-    labels = labelTxt.split('\n');
-  }
-
-
   Future<void> runModel(input) async {
     if (cameraImage != null && cameraImage!.planes.isNotEmpty && !isModelBusy) {
       isModelBusy = true; // Mark interpreter as busy
       try {
         var predictions = await Tflite.runModelOnFrame(
-          //List<dynamic>? predictions
           bytesList: cameraImage!.planes
               .map<Uint8List>((Plane plane) => convertPlaneToBytes(plane))
               .toList(),
@@ -96,14 +89,16 @@ class _CameraPageState extends State<CameraPage> {
         );
         if (predictions != null && predictions.isNotEmpty) {
           for (var element in predictions) {
-          setState(() {
-            emotion = element['label'];//predictions[0]['label']; //
-            emotionCounts[emotion!] = (emotionCounts[emotion] ?? 0) + 1;
-          });
+            setState(() {
+              emotion = element['label'];
+              emotionCounts[emotion!] = (emotionCounts[emotion] ?? 0) + 1;
+            });
           }
-          if (emotionCounts[emotion] != null && emotionCounts[emotion]! >= 100) {// yoğun algılanan duyguyu printle
+          if (emotionCounts[emotion] != null && emotionCounts[emotion]! >= 20) {
+            // yoğun algılanan duyguyu printle
             Navigator.pushReplacementNamed(context, '/suggestionpage',
                 arguments: {"emotion": emotion});
+            //önce sayfayı yönlendir, sonra camera ve modeli kapat - tam tersini sakın yapma
             await stopCameraAndModel();
           }
         }
@@ -117,14 +112,14 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   Future<void> stopCameraAndModel() async {
-    await Tflite.close();
+    await Tflite.close(); //önce modeli durdur
     if (cameraController != null) {
       try {
-        await cameraController?.stopImageStream();
-        await cameraController?.dispose();
+        await cameraController!.stopImageStream();
+        await cameraController!.dispose();
       } catch (e) {
         debugPrint("Error stopping camera: $e");
-      }
+      } //bundan sonra finally olarak camcontrlr ı null yapıyordun - sakın yapma
     }
   }
 
@@ -136,43 +131,52 @@ class _CameraPageState extends State<CameraPage> {
 
   void switchCamera() async {
     selectedCamIdx = (selectedCamIdx + 1) % cameras!.length;
-    await cameraController?.dispose();
-    loadCamera();
+    await cameraController?.dispose(); //kapat
+    loadCamera(); //yeniden yükle
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        title: Text("Duygu Analizi"),
-      ),
-      body: Stack(
-        children: [
-          cameraController != null && cameraController!.value.isInitialized
-              ? CameraPreview(cameraController!)
-              : Center(child: CircularProgressIndicator()),
-          Positioned(
-            bottom: 20,
-            left: 20,
-            child: Text(
-              "Şu anki Duygu: $emotion",
-              style: TextStyle(
-                fontSize: 24,
-                color: Theme.of(context).colorScheme.inversePrimary,
-              ),
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        appBar: AppBar(
+          title: const Text("Duygu Analizi"),
+          automaticallyImplyLeading: false,
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Stack(
+              children: [
+                cameraController != null && cameraController!.value.isInitialized
+                    ? CameraPreview(cameraController!)
+                    : const Center(child: CircularProgressIndicator()),
+                Positioned(
+                  bottom: 20,
+                  left: 20,
+                  child: Text(
+                    "Şu anki Duygu: $emotion",
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  bottom: 20,
+                  right: 20,
+                  child: IconButton(
+                    icon: Icon(Icons.switch_camera,
+                        color: Theme.of(context).colorScheme.inversePrimary),
+                    onPressed: switchCamera,
+                  ),
+                ),
+              ],
             ),
-          ),
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: IconButton(
-              icon: Icon(Icons.switch_camera,
-                  color: Theme.of(context).colorScheme.inversePrimary),
-              onPressed: switchCamera,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

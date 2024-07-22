@@ -25,7 +25,7 @@ Future<void> main() async {
   runApp(
     ChangeNotifierProvider(
       create: (context)=>ThemeProvider(),
-      child: const MainApp())
+      child: const MainApp()),
       );
 }
 
