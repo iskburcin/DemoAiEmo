@@ -27,6 +27,7 @@ class _CameraPageState extends State<CameraPage> {
   };
   bool isModelBusy = false; //başlangıçta model meşgul değil
   bool isCameraInitialized = false; // daha kamera başlamadı
+  bool isBackButtonOn = false;
 
   List<String>? labels;
   @override
@@ -94,7 +95,12 @@ class _CameraPageState extends State<CameraPage> {
               emotionCounts[emotion!] = (emotionCounts[emotion] ?? 0) + 1;
             });
           }
-          if (emotionCounts[emotion] != null && emotionCounts[emotion]! >= 20) {
+          if (isBackButtonOn == true) {
+            Navigator.pushNamed(context, '/homepage');
+            await stopCameraAndModel();
+            isBackButtonOn = false;
+          } else if (emotionCounts[emotion] != null &&
+              emotionCounts[emotion]! >= 20) {
             // yoğun algılanan duyguyu printle
             Navigator.pushReplacementNamed(context, '/suggestionpage',
                 arguments: {"emotion": emotion});
@@ -148,9 +154,18 @@ class _CameraPageState extends State<CameraPage> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  isBackButtonOn = true;
+                });
+              },
+              child: const Text("B A C K"),
+            ),
             Stack(
               children: [
-                cameraController != null && cameraController!.value.isInitialized
+                cameraController != null &&
+                        cameraController!.value.isInitialized
                     ? CameraPreview(cameraController!)
                     : const Center(child: CircularProgressIndicator()),
                 Positioned(

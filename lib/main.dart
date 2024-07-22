@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
-
 List<CameraDescription>? cameras;
 
 Future<void> main() async {
@@ -21,33 +20,31 @@ Future<void> main() async {
   cameras = await availableCameras();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
-  );  
+  );
   runApp(
     ChangeNotifierProvider(
-      create: (context)=>ThemeProvider(),
-      child: const MainApp()),
-      );
+        create: (context) => ThemeProvider(), child: const MainApp()),
+  );
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key,});
+  const MainApp({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-       debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       home: const AuthPage(), //app knows that what it should show on the screen
       theme: Provider.of<ThemeProvider>(context).themeData,
       routes: {
-        '/homepage':(context) => const HomePage(),
-        '/camerapage':(context) => const CameraPage(),
-        '/profilepage':(context) => ProfilePage( ),
-        '/settingpage': (context) => const SettingPage(),   
-        '/suggestionpage': (context) => const SuggestionPage(),      
+        '/homepage': (context) => const HomePage(),
+        '/camerapage': (context) => const CameraPage(),
+        '/profilepage': (context) => ProfilePage(),
+        '/settingpage': (context) => const SettingPage(),
+        '/suggestionpage': (context) => const SuggestionPage(),
       },
     );
-   }
-
-
+  }
 }
-

@@ -9,8 +9,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int selectedIndex = 0;  
-  void navigateBottomBarToPages(int index){
+  int selectedIndex = 0;
+  void navigateBottomBarToPages(int index) {
     setState(() {
       selectedIndex = index;
     });
@@ -18,57 +18,66 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("AIEmo"),
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          // padding:const EdgeInsets.only(left: 120,right: 120,top: 120),
-          children: [
-            Column(children: [
-              Container(height: 50,),
+        // padding:const EdgeInsets.only(left: 120,right: 120,top: 120),
+        children: [
+          Column(
+            children: [
               Container(
-                margin: const EdgeInsets.symmetric(horizontal:25),
-                width: MediaQuery.sizeOf(context).width ,
+                height: 50,
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 25),
+                width: MediaQuery.sizeOf(context).width,
                 padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(color: Color.fromARGB(255, 184, 14, 14)),
-                child:const Row(
+                decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 184, 14, 14)),
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text("Hello BRM !!  ",style: TextStyle(fontSize: 30),),
+                    Text(
+                      "Hello BRM !!  ",
+                      style: TextStyle(fontSize: 30),
+                    ),
                     Icon(Icons.waving_hand_outlined)
                   ],
                 ),
               ),
-              Container(height: 70,),
-              const Text("Burada AIEmo'yu tanıtacak textler bulunacak",
-                style: TextStyle(fontSize: 20),),
-              ],),
-
-           Container(
+              Container(
+                height: 70,
+              ),
+              Text(
+              "Algılanan Duygu: emotion",
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          Container(
             padding: const EdgeInsets.all(15),
             height: 100,
             width: 100,
-             child: FloatingActionButton( 
+            child: FloatingActionButton(
               onPressed: () async {
                 Navigator.pushNamed(context, '/camerapage');
-                }, 
-              backgroundColor:Colors.black,
-              hoverColor:  Colors.red[700],
+              },
+              backgroundColor: Colors.black,
+              hoverColor: Colors.red[700],
               child: const Icon(
-                Icons.camera,color: Colors.white,size: 40, ),
-                       ),
-           )
+                Icons.camera,
+                color: Colors.white,
+                size: 40,
+              ),
+            ),
+          )
         ],
-       ),
-
+      ),
       drawer: const MyDrawer(),
     );
   }
-
-  
-
-
-  
 }
