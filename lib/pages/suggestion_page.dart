@@ -1,13 +1,53 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class SuggestionPage extends StatelessWidget {
+class SuggestionPage extends StatefulWidget {
   const SuggestionPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    Map args = ModalRoute.of(context)!.settings.arguments as Map;
-    String emotion= args["emotion"];
+  _SuggestionPageState createState() => _SuggestionPageState();
+}
 
+class _SuggestionPageState extends State<SuggestionPage> {
+  String _activitySuggestion = "Loading...";
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchActivitySuggestion();
+  }
+
+  Future<void> _fetchActivitySuggestion() async {
+    Map args = ModalRoute.of(context)!.settings.arguments as Map;
+    String emotion = args["emotion"];
+    User user = FirebaseAuth.instance.currentUser!;
+    DocumentSnapshot userDoc = await FirebaseFirestore.instance
+        .collection("Users")
+        .doc(user.email)
+        .get();
+
+    int age = userDoc['Age'];
+    String gender = userDoc['Gender'];
+    String job = userDoc['Occupation'];
+
+    final response = await http.get(Uri.parse(
+        'http://127.0.0.1:5000/predict?Yaş=$age&Cinsiyet=$gender&Meslek=$job&State=$emotion'));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _activitySuggestion = response.body;
+      });
+    } else {
+      setState(() {
+        _activitySuggestion = "Failed to get suggestions.";
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Öneri Sayfası")),
       body: Padding(
@@ -16,12 +56,12 @@ class SuggestionPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Algılanan Duygu: $emotion",
+              "Algılanan Duygu: ${ModalRoute.of(context)!.settings.arguments as String}",
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             Text(
-              _getSuggestionsForEmotion(emotion),
+              _activitySuggestion,
               style: const TextStyle(fontSize: 18),
             ),
           ],
@@ -29,23 +69,4 @@ class SuggestionPage extends StatelessWidget {
       ),
     );
   }
-
-  String _getSuggestionsForEmotion(String emotion) {
-      //İNSANLARLA YAPTIĞIMIZ BİR ANKETTE DUYGU DURUMUNA GÖRE YAPTIKLARI AKTİVİTELERİ
-      //TOPLADIĞIMIZ VERİSETİYLE EĞİTTİMİZ BİR ÖNERİ MODELİ BU KISIMA ENTEGRE EDİLECEK
-
-    switch (emotion) {
-      case "Mutlu":
-        return "Sana bazı önerilerim varr:\n- Yürüyüşe çık\n- Bir yakınını ara\n- Bir komedi filmi izle";
-      case "Üzgün":
-        return "Sana bazı önerilerim varr:\n- Moral veren müzikler dinle\n- Günlük yaz\n- Sevdiğin birini ara";
-      case "Öfkeli":
-        return "Sana bazı önerilerim varr:\n- Derin nefes al\n- Spor yap\n- Duş al";
-      case "Nötr":
-        return "Sana bazı önerilerim varr:\n- Temizlik yap\n- Seyehata çık";
-      default:
-        return "Sana bazı önerilerim varr:";
-    }
-  }
-
 }
