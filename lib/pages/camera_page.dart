@@ -18,7 +18,7 @@ class _CameraPageState extends State<CameraPage> {
   CameraDevice? cameraDevice;
   // Interpreter? interpreter;
   int selectedCamIdx = 1;
-  String? emotion = "Neutral"; //default duygu
+  String? emotion = "Mutlu"; //default duygu
   Map<String, int> emotionCounts = {
     "Mutlu": 0,
     "Üzgün": 0,
