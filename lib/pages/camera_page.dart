@@ -18,15 +18,15 @@ class _CameraPageState extends State<CameraPage> {
   CameraDevice? cameraDevice;
   // Interpreter? interpreter;
   int selectedCamIdx = 1;
-<<<<<<< HEAD
+
   String? emotion = "Mutlu"; //default duygu
-=======
-  String? emotion = "Mutlu 😊"; //default duygu
->>>>>>> 4ade19e1897708a93e96817efd449b29fb8ce1b6
+
+  
+
   Map<String, int> emotionCounts = {
-    "Öfkeli 😡": 0,
-    "Mutlu 😊": 0,
-    "Üzgün 😒": 0,
+    "Öfkeli": 0,
+    "Mutlu": 0,
+    "Üzgün": 0,
   };
   bool isModelBusy = false; //başlangıçta model meşgul değil
   bool isCameraInitialized = false; // daha kamera başlamadı
