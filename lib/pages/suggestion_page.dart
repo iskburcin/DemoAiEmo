@@ -95,7 +95,14 @@ class _SuggestionPageState extends State<SuggestionPage> {
       _isLoading = false;
     });
   }
-}
+  }
+  void _navigateToActivityPage(String suggestion) {
+    Navigator.pushNamed(
+      context,
+      '/activity_page',
+      arguments: {'suggestion': suggestion},
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +125,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
                       return ElevatedButton(
                         onPressed: () {
                           // Butona tıklanınca yapılacak işlemler
-                          print('Button for $suggestion pressed');
+                          _navigateToActivityPage(suggestion);
                         },
                         child: Text(suggestion),
                       );

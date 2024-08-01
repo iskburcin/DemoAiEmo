@@ -1,6 +1,7 @@
 import 'package:demoaiemo/pages/camera_page.dart';
 import 'package:demoaiemo/auth/auth_page.dart';
 import 'package:demoaiemo/pages/home_page.dart';
+import 'package:demoaiemo/pages/activity_page.dart';
 import 'package:demoaiemo/pages/profile_page.dart';
 import 'package:demoaiemo/pages/setting_page.dart';
 import 'package:demoaiemo/pages/suggestion_page.dart';
@@ -44,6 +45,7 @@ class MainApp extends StatelessWidget {
         '/profilepage': (context) => ProfilePage(),
         '/settingpage': (context) => const SettingPage(),
         '/suggestionpage': (context) => const SuggestionPage(),
+        '/activity_page': (context) => const ActivityPage(),
       },
     );
   }
