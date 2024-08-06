@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text("Şifremi Unuttum",style: TextStyle(
+                  Text("Çifremi Unuttum",style: TextStyle(
                     color: Theme.of(context).colorScheme.secondary
                   ),
                   ),

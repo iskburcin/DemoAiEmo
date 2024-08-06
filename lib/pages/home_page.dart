@@ -9,16 +9,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int selectedIndex = 0;
-  void navigateBottomBarToPages(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("AIEmo"),
@@ -36,10 +28,10 @@ class _HomePageState extends State<HomePage> {
                 margin: const EdgeInsets.symmetric(horizontal: 25),
                 width: MediaQuery.sizeOf(context).width,
                 padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                    color: Color.fromARGB(255, 184, 14, 14)),
+                decoration:
+                    const BoxDecoration(color: Color.fromARGB(255, 104, 5, 5)),
                 child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       "Hello BRM !!  ",
@@ -52,9 +44,12 @@ class _HomePageState extends State<HomePage> {
               Container(
                 height: 70,
               ),
-              Text(
-              "Algılanan Duygu: emotion",
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              const Padding(
+                padding: EdgeInsets.all(25.0),
+                child: Text(
+                  "Uygulamayı Tanıtan \nText/Imageler Bölümü ",
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),

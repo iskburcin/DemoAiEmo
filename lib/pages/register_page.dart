@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demoaiemo/system/helpers.dart';
 import 'package:demoaiemo/util/labeled_radio_button.dart';
 import 'package:demoaiemo/util/my_botton.dart';
+import 'package:demoaiemo/util/labeled_location_button.dart';
 import 'package:demoaiemo/util/my_textfields.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController genderController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController occupationController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
   String selectedGender = "Kadın";
 
   @override
@@ -36,47 +38,48 @@ class _RegisterPageState extends State<RegisterPage> {
         title: const Text("AIEmo"),
       ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(25.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _title(),
-              Expanded(
-                  child: ListView(shrinkWrap: true, children: [
-                const SizedBox(
-                  height: 25,
-                ),
-                _loginform(),
-                const SizedBox(
-                  height: 10,
-                ),
-                MyBotton(
-                  text: "Kaydol",
-                  onTap: registerUser,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Hesabın var mu?",
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.inversePrimary),
-                    ),
-                    GestureDetector(
-                        onTap: widget.onTap,
-                        child: const Text(
-                          "Giriş Yap",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ))
-                  ],
-                ),
-              ]))
-            ],
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            _title(),
+            Expanded(
+                child: ListView(
+                    padding: const EdgeInsets.all(25.0),
+                    shrinkWrap: true,
+                    children: [
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  _loginform(),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  MyBotton(
+                    text: "Kaydol",
+                    onTap: registerUser,
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Hesabın var mu?",
+                        style: TextStyle(
+                            color:
+                                Theme.of(context).colorScheme.inversePrimary),
+                      ),
+                      GestureDetector(
+                          onTap: widget.onTap,
+                          child: const Text(
+                            "Giriş Yap",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ))
+                    ],
+                  ),
+                ]))
+          ],
         ),
       ),
     );
@@ -137,9 +140,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 controller: nameController,
               ),
             ),
-          const SizedBox(
-            width: 10,
-          ),
+            const SizedBox(
+              width: 10,
+            ),
             Expanded(
               child: MyTextfield(
                 hintText: "Soyadınız",
@@ -204,6 +207,25 @@ class _RegisterPageState extends State<RegisterPage> {
         const SizedBox(
           height: 10,
         ),
+        Row(
+          children: [
+            Expanded(
+              child: MyTextfield(
+                hintText: "Konumunuz:",
+                obscureText: false,
+                controller: locationController,
+              ),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: LabeledLocationButton(
+                controller: locationController,
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -219,7 +241,8 @@ class _RegisterPageState extends State<RegisterPage> {
         'Surname': surnameController.text,
         'Gender': genderController.text,
         'Age': ageController.text,
-        'Occupation': occupationController.text
+        'Occupation': occupationController.text,
+        'Location': locationController.text,
       });
     }
   }

@@ -1,17 +1,62 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demoaiemo/util/labeled_location_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ProfilePage extends StatelessWidget {
+class ProfilePage extends StatefulWidget {
   ProfilePage({super.key});
 
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
   final User? currentUser = FirebaseAuth.instance.currentUser;
 
-  Future<DocumentSnapshot<Map<String, dynamic>>> getUserDetails()  {
-    return  FirebaseFirestore.instance
-    .collection("Users")
-    .doc(currentUser!.email)
-    .get();
+  Future<DocumentSnapshot<Map<String, dynamic>>> getUserDetails() {
+    return FirebaseFirestore.instance
+        .collection("Users")
+        .doc(currentUser!.email)
+        .get();
+  }
+
+  bool isEditing = false;
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController surnameController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
+  final TextEditingController genderController = TextEditingController();
+  final TextEditingController occupationController = TextEditingController();
+  final TextEditingController locationController = TextEditingController();
+
+  void enableEditing(Map<String, dynamic>? user) {
+    setState(() {
+      isEditing = true;
+      nameController.text = user?['Name'] ?? '';
+      surnameController.text = user?['Surname'] ?? '';
+      ageController.text = user?['Age'] ?? '';
+      genderController.text = user?['Gender'] ?? '';
+      occupationController.text = user?['Occupation'] ?? '';
+      locationController.text = user?['Location'] ?? '';
+    });
+  }
+
+  void saveProfile() async {
+    if (currentUser != null) {
+      await FirebaseFirestore.instance
+          .collection("Users")
+          .doc(currentUser!.email)
+          .update({
+        'Name': nameController.text,
+        'Surname': surnameController.text,
+        'Age': ageController.text,
+        'Gender': genderController.text,
+        'Occupation': occupationController.text,
+        'Location': locationController.text,
+      });
+      setState(() {
+        isEditing = false;
+      });
+    }
   }
 
   @override
@@ -21,84 +66,172 @@ class ProfilePage extends StatelessWidget {
         title: const Text("Profilim"),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         elevation: 0,
-        ),
+        actions: [
+          if (!isEditing)
+            IconButton(
+              icon: const Icon(Icons.edit),
+              onPressed: () async {
+                final user = await getUserDetails();
+                enableEditing(user.data());
+              },
+            )
+        ],
+      ),
       backgroundColor: Theme.of(context).colorScheme.surface,
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children:[ 
-          FutureBuilder<DocumentSnapshot<Map<String, dynamic>>> ( 
-          future: getUserDetails(),
-          builder: (context, snapshot){
-            // loading... 
-            if(snapshot.connectionState == ConnectionState.waiting){
-              return const Center(
-                child: CircularProgressIndicator()
-              );
-            }
-            else if (snapshot.hasError){ //error
-              return Text("Error: ${snapshot.error}");
-            }
-            else if(snapshot.hasData){ //dataları çıkar
-              Map<String,dynamic>? user = snapshot.data!.data();
-        
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      color: Theme.of(context).colorScheme.primary
-                    ),
-                    padding: const EdgeInsets.all(25),
-                    child: const Icon(Icons.person, size: 64,),
-                  ),
-
-                  const SizedBox(height: 10,),
-
-                  Text("Email: ${user?['Email']}",
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 10,),
-
-                  Text("Yaş: ${user?['Age']}",
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 10,),
-
-                  Text("Cinsiyet: ${user?['Gender']}",
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                  
-                  const SizedBox(height: 10,),
-
-                  Text("Meslek: ${user?['Occupation']}",
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold
-                    ),
-                  ),
-                ],
-              );
-            }else {
-              return const Text("No data");
-            }
+      body: FutureBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        future: getUserDetails(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          } else if (snapshot.hasData) {
+            Map<String, dynamic>? user = snapshot.data!.data();
+            return Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: isEditing
+                  ? buildEditForm(context)
+                  : buildProfileView(context, user),
+            );
+          } else {
+            return const Center(child: Text("No data"));
           }
-        ),]
-      )
-      
+        },
+      ),
+    );
+  }
+
+  Widget buildProfileView(BuildContext context, Map<String, dynamic>? user) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        CircleAvatar(
+          radius: 64,
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          child: const Icon(Icons.person, size: 64, color: Colors.white),
+        ),
+        const SizedBox(height: 20),
+        Text(
+          "${user?['Name']} ${user?['Surname']}",
+          style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          user?['Email'] ?? '',
+          style: TextStyle(
+            fontSize: 18,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+        ),
+        const SizedBox(height: 20),
+        Divider(color: Theme.of(context).colorScheme.onSurface, thickness: 1),
+        const SizedBox(height: 20),
+        ProfileDetailRow(label: "Yaş", value: user?['Age']),
+        ProfileDetailRow(label: "Cinsiyet", value: user?['Gender']),
+        ProfileDetailRow(label: "Meslek", value: user?['Occupation']),
+        ProfileDetailRow(label: "Konum", value: user?['Location']),
+        const SizedBox(height: 20),
+      ],
+    );
+  }
+
+  Widget buildEditForm(BuildContext context) {
+    return Expanded(
+      child: ListView(
+        padding: const EdgeInsets.all(10.0),
+        children: [
+          CircleAvatar(
+            radius: 64,
+            backgroundColor: Theme.of(context).colorScheme.primary,
+            child: const Icon(Icons.person, size: 64, color: Colors.white),
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: nameController,
+            decoration: const InputDecoration(labelText: 'Name'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: surnameController,
+            decoration: const InputDecoration(labelText: 'Surname'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: ageController,
+            decoration: const InputDecoration(labelText: 'Age'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: genderController,
+            decoration: const InputDecoration(labelText: 'Gender'),
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: occupationController,
+            decoration: const InputDecoration(labelText: 'Occupation'),
+          ),
+          const SizedBox(height: 10),
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: locationController,
+                  decoration: const InputDecoration(labelText: 'Location'),
+                ),
+              ),
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: LabeledLocationButton(
+                  controller: locationController,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: saveProfile,
+            icon: const Icon(Icons.save),
+            label: const Text("Kaydet"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+              iconColor: Theme.of(context).colorScheme.primary,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ProfileDetailRow extends StatelessWidget {
+  final String label;
+  final String? value;
+
+  const ProfileDetailRow({Key? key, required this.label, this.value})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Text(
+            "$label: ",
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: Text(
+              value ?? '',
+              style: const TextStyle(fontSize: 18),
+              textAlign: TextAlign.end,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
