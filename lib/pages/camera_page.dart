@@ -23,7 +23,6 @@ class _CameraPageState extends State<CameraPage> {
     "Mutlu": 0,
     "Üzgün": 0,
     "Öfkeli": 0,
-    "Nötr": 0,
   };
   bool isModelBusy = false; //başlangıçta model meşgul değil
   bool isCameraInitialized = false; // daha kamera başlamadı
