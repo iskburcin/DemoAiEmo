@@ -46,7 +46,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
 
       try {
         final response = await http.post(
-          Uri.parse('http://192.168.1.104:5000/predict'),
+          Uri.parse('http://192.168.137.23:5000/predict'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -99,7 +99,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
 
   Future<void> _saveUserSelection(String userId, String mood, String suggestion) async {
     final response = await http.post(
-      Uri.parse('http://192.168.1.104:5000/save_selection'),
+      Uri.parse('http://192.168.137.23:5000/save_selection'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -148,7 +148,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
 
       try {
         final response = await http.post(
-          Uri.parse('http://192.168.1.104:5000/get_most_frequent_activity'),
+          Uri.parse('http://192.168.137.23:5000/get_most_frequent_activity'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -183,7 +183,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
 
       try {
         final response = await http.post(
-          Uri.parse('http://192.168.1.104:5000/get_most_frequent_activity'),
+          Uri.parse('http://192.168.137.23:5000/get_most_frequent_activity'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
