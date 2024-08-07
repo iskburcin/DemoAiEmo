@@ -18,11 +18,13 @@ class _CameraPageState extends State<CameraPage> {
   CameraDevice? cameraDevice;
   // Interpreter? interpreter;
   int selectedCamIdx = 1;
-  String? emotion = "Neutral"; //default duygu
+
+  String? emotion = "netreal"; //default duygu
+
   Map<String, int> emotionCounts = {
+    "Öfkeli": 0,
     "Mutlu": 0,
     "Üzgün": 0,
-    "Öfkeli": 0,
   };
   bool isModelBusy = false; //başlangıçta model meşgul değil
   bool isCameraInitialized = false; // daha kamera başlamadı
@@ -83,7 +85,7 @@ class _CameraPageState extends State<CameraPage> {
           imageMean: 0,
           imageStd: 255,
           rotation: 0,
-          numResults: 2,
+          numResults:3,
           threshold: 0.1,
           asynch: true,
         );
@@ -95,11 +97,11 @@ class _CameraPageState extends State<CameraPage> {
             });
           }
           if (isBackButtonOn == true) {
-            Navigator.pushNamed(context, '/homepage');
+            Navigator.pushReplacementNamed(context, '/homepage');
             await stopCameraAndModel();
             isBackButtonOn = false;
           } else if (emotionCounts[emotion] != null &&
-              emotionCounts[emotion]! >= 20) {
+              emotionCounts[emotion]! >= 50) {
             // yoğun algılanan duyguyu printle
             Navigator.pushReplacementNamed(context, '/suggestionpage',
                 arguments: {"emotion": emotion});
@@ -145,21 +147,24 @@ class _CameraPageState extends State<CameraPage> {
     return PopScope(
       canPop: false,
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: AppBar(
           title: const Text("Duygu Analizi"),
           automaticallyImplyLeading: false,
+          leading: BackButton(
+            color: Theme.of(context).colorScheme.onSecondary,
+            onPressed: () {
+              setState(() {
+                isBackButtonOn = true;
+              });
+            },
+          ),
         ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  isBackButtonOn = true;
-                });
-              },
-              child: const Text("B A C K"),
+            Container(
+              height: 50,
             ),
             Stack(
               children: [

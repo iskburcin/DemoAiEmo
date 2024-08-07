@@ -4,6 +4,7 @@ import 'package:demoaiemo/pages/home_page.dart';
 import 'package:demoaiemo/pages/profile_page.dart';
 import 'package:demoaiemo/pages/setting_page.dart';
 import 'package:demoaiemo/pages/suggestion_page.dart';
+import 'package:demoaiemo/system/my_provider.dart';
 import 'package:demoaiemo/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
@@ -22,8 +23,17 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-    ChangeNotifierProvider(
-        create: (context) => ThemeProvider(), child: const MainApp()),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => ThemeProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => MyProvider(),
+        ),
+      ],
+      child: const MainApp(),
+    ),
   );
 }
 
