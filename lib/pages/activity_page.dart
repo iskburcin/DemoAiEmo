@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ActivityPage extends StatelessWidget {
-  const ActivityPage({super.key});
+  final String suggestion;
+
+  const ActivityPage({super.key, required this.suggestion});
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
-    final suggestion = args['suggestion'];
-
     String getActivitySuggestion(String activity) {
       switch (activity) {
         case 'Doğa Yürüyüşü':

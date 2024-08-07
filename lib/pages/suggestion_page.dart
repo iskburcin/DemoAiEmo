@@ -8,22 +8,25 @@ class SuggestionPage extends StatefulWidget {
   const SuggestionPage({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SuggestionPageState createState() => _SuggestionPageState();
 }
 
 class _SuggestionPageState extends State<SuggestionPage> {
   List<String> _activitySuggestions = [];
-  String? _mostFrequentActivityUser;
-  String? _mostFrequentActivityAll;
-  bool _isLoading = true;
+  String? _mostFrequentActivityUser; // Kullanıcının en çok tercih ettiği aktiviteyi tutar
+  String? _mostFrequentActivityAll; // Tüm kullanıcıların en çok tercih ettiği aktiviteyi tutar.
+  bool _isLoading = true; // Verilerin yüklenip yüklenmediğini belirler.
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _fetchActivitySuggestion();
+    _fetchActivitySuggestion(); // Fonksiyonu çağrılır.
   }
 
   Future<void> _fetchActivitySuggestion() async {
+    // Kullanıcı verilerini ve duygusal durumu alarak API'ye istek gönderir.
+    // API yanıtını işleyerek _activitySuggestions listesini günceller.
     final args = ModalRoute.of(context)!.settings.arguments;
 
     if (args is Map<String, dynamic>) {
@@ -98,6 +101,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
   }
 
   Future<void> _saveUserSelection(String userId, String mood, String suggestion) async {
+    // Kullanıcının yaptığı seçimi API'ye göndererek kaydeder.
     final response = await http.post(
       Uri.parse('http://192.168.1.104:5000/save_selection'),
       headers: <String, String>{
@@ -117,8 +121,9 @@ class _SuggestionPageState extends State<SuggestionPage> {
 
   void _navigateToActivityPage(String suggestion) async {
     // Kullanıcı kimliğini al
+    // Kullanıcı seçimini kaydettikten sonra ActivityPage sayfasına yönlendirir.
     User user = FirebaseAuth.instance.currentUser!;
-    String userId = user.email!;  // veya kullanıcı kimliği olarak neyi kullanıyorsanız
+    String userId = user.email!; // veya kullanıcı kimliği olarak neyi kullanıyorsanız
 
     // Seçimi kaydet
     final args = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -133,12 +138,14 @@ class _SuggestionPageState extends State<SuggestionPage> {
 
     Navigator.pushNamed(
       context,
-      '/activity_page',
+      '/activitypage', // Burada rotayı düzelttim
       arguments: {'suggestion': suggestion},
     );
   }
 
   Future<void> _getMostFrequentActivityUser() async {
+    // Kullanıcının en çok tercih ettiği aktiviteyi API'den alır
+    // ve _mostFrequentActivityUser değişkenine atar
     final args = ModalRoute.of(context)!.settings.arguments;
 
     if (args is Map<String, dynamic>) {
@@ -176,6 +183,8 @@ class _SuggestionPageState extends State<SuggestionPage> {
   }
 
   Future<void> _getMostFrequentActivityAll() async {
+    // Tüm kullanıcıların en çok tercih ettiği aktiviteyi API'den alır
+    // ve _mostFrequentActivityAll değişkenine atar.
     final args = ModalRoute.of(context)!.settings.arguments;
 
     if (args is Map<String, dynamic>) {
@@ -188,7 +197,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
             'Content-Type': 'application/json; charset=UTF-8',
           },
           body: jsonEncode(<String, dynamic>{
-            'user_id': 'all_users',  // Genel kullanıcıları temsil eden bir kimlik
+            'user_id': 'all_users', // Genel kullanıcıları temsil eden bir kimlik
             'mood': emotion,
           }),
         );
@@ -211,15 +220,18 @@ class _SuggestionPageState extends State<SuggestionPage> {
   }
 
   void _navigateToMostFrequentActivityPage(String activity) {
+    // En çok tercih edilen aktiviteyle birlikte ActivityPage sayfasına yönlendirir
     Navigator.pushNamed(
       context,
-      '/activity_page',
+      '/activitypage', // Burada rotayı düzelttim
       arguments: {'suggestion': activity},
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    // Kullanıcı arayüzünü oluşturur ve kullanıcıya önerilen aktiviteleri
+    // ve butonları gösterir.
     return Scaffold(
       appBar: AppBar(title: const Text("Öneri Sayfası")),
       body: Padding(

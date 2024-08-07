@@ -47,8 +47,8 @@ class _HomePageState extends State<HomePage> {
               const Padding(
                 padding: EdgeInsets.all(25.0),
                 child: Text(
-                  "Uygulamayı Tanıtan \nText/Imageler Bölümü ",
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  "                SELAM!!!\nBAŞLAMAK İÇİN AŞAĞIDAKİ\n             BUTONA BAS ",
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
