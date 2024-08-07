@@ -29,26 +29,25 @@ class _LabeledRadioState extends State<LabeledRadio> {
   }
   @override
   Widget build(BuildContext context) {
-    return Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start, 
+      children: [
       for (String genderOption in genderList)
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
-          child: Row(
-            children: [
-              Radio<String>(
-                value: genderOption,
-                groupValue: gender,
-                onChanged: (String? value) {
-                  setState(() {
-                    gender = value!;
-                    widget.onChanged(value);
-                    widget.controller.text = value;
-                  });
-                },
-              ),
-              Text(genderOption),
-            ],
-          ),
+        Row(
+          children: [
+            Radio<String>(
+              value: genderOption,
+              groupValue: gender,
+              onChanged: (String? value) {
+                setState(() {
+                  gender = value!;
+                  widget.onChanged(value);
+                  widget.controller.text = value;
+                });
+              },
+            ),
+            Text(genderOption),
+          ],
         ),
     ]);
   }
