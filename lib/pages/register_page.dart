@@ -6,6 +6,7 @@ import 'package:demoaiemo/util/labeled_location_button.dart';
 import 'package:demoaiemo/util/my_textfields.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class RegisterPage extends StatefulWidget {
   final void Function()? onTap;
@@ -191,10 +192,17 @@ class _RegisterPageState extends State<RegisterPage> {
         const SizedBox(
           height: 10,
         ),
-        MyTextfield(
-          hintText: "Yaşınız",
-          obscureText: false,
+        TextField(
           controller: ageController,
+          keyboardType: TextInputType.number,
+          obscureText: false,
+          decoration:const InputDecoration(
+            labelText: 'Yaşınız',
+            border: OutlineInputBorder(),
+          ),
+          inputFormatters: <TextInputFormatter>[
+            FilteringTextInputFormatter.digitsOnly
+          ],
         ),
         const SizedBox(
           height: 10,
@@ -240,7 +248,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'Name': nameController.text,
         'Surname': surnameController.text,
         'Gender': genderController.text,
-        'Age': ageController.text,
+        'Age': int.parse(ageController.text),
         'Occupation': occupationController.text,
         'Location': locationController.text,
       });

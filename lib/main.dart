@@ -1,3 +1,4 @@
+import 'package:demoaiemo/pages/activity_page.dart';
 import 'package:demoaiemo/pages/camera_page.dart';
 import 'package:demoaiemo/auth/auth_page.dart';
 import 'package:demoaiemo/pages/home_page.dart';
@@ -46,7 +47,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const AuthPage(), //app knows that what it should show on the screen
+      home: const AuthPage(),
       theme: Provider.of<ThemeProvider>(context).themeData,
       routes: {
         '/homepage': (context) => const HomePage(),
@@ -54,6 +55,19 @@ class MainApp extends StatelessWidget {
         '/profilepage': (context) => ProfilePage(),
         '/settingpage': (context) => const SettingPage(),
         '/suggestionpage': (context) => const SuggestionPage(),
+      },
+      onGenerateRoute: (RouteSettings settings) {
+        if (settings.name == '/activitypage') {
+          final args = settings.arguments as Map<String, dynamic>;
+          return MaterialPageRoute(
+            builder: (context) {
+              return ActivityPage(
+                suggestion: args['suggestion'],
+              );
+            },
+          );
+        }
+        return null;
       },
     );
   }

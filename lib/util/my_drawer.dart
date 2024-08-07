@@ -47,20 +47,6 @@ class MyDrawer extends StatelessWidget {
                       Navigator.pushNamed(context, '/profilepage');
                     },
                   ),
-
-                  ListTile(
-                    textColor: Theme.of(context).colorScheme.inversePrimary,
-                    leading: Icon(
-                      Icons.person, 
-                      color: Theme.of(context).colorScheme.inversePrimary,
-                      ),
-                    title: const Text("Ö N E R İ"),
-                    contentPadding: const EdgeInsets.only(left: 35),
-                    onTap: (){
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/suggestionpage');
-                    },
-                  ),
                   
                   ListTile(
                     textColor: Theme.of(context).colorScheme.inversePrimary,

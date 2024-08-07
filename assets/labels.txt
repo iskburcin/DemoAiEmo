@@ -1,3 +1,7 @@
 Mutlu
 Üzgün
+<<<<<<< HEAD
 Öfkeli
+=======
+Öfkeli
+>>>>>>> 422dd0eca9051585c4220cafa1cac87e476b2e46

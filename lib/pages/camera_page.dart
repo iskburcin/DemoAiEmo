@@ -1,5 +1,7 @@
+import 'package:demoaiemo/util/progress_arc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite_v2/tflite_v2.dart';
 import 'package:camera/camera.dart';
@@ -18,8 +20,9 @@ class _CameraPageState extends State<CameraPage> {
   CameraDevice? cameraDevice;
   // Interpreter? interpreter;
   int selectedCamIdx = 1;
+  double progress = 0.0; //progress of emotion prediction
 
-  String? emotion = "netreal"; //default duygu
+  String? emotion = "Mutlu"; //default duygu
 
   Map<String, int> emotionCounts = {
     "Öfkeli": 0,
@@ -85,7 +88,7 @@ class _CameraPageState extends State<CameraPage> {
           imageMean: 0,
           imageStd: 255,
           rotation: 0,
-          numResults:3,
+          numResults: 3,
           threshold: 0.1,
           asynch: true,
         );
@@ -94,6 +97,7 @@ class _CameraPageState extends State<CameraPage> {
             setState(() {
               emotion = element['label'];
               emotionCounts[emotion!] = (emotionCounts[emotion] ?? 0) + 1;
+              progress = emotionCounts[emotion]! / 50.0; // Update the progress
             });
           }
           if (isBackButtonOn == true) {
@@ -109,6 +113,9 @@ class _CameraPageState extends State<CameraPage> {
             await stopCameraAndModel();
           }
         }
+        // setState(() {
+        //   progress = (progress + 0.01) % 1.0; // Update the progress
+        // });
       } catch (e) {
         debugPrint("Error running model: $e");
       } finally {
@@ -133,13 +140,14 @@ class _CameraPageState extends State<CameraPage> {
   @override
   void dispose() {
     stopCameraAndModel();
+
     super.dispose();
   }
 
   void switchCamera() async {
     selectedCamIdx = (selectedCamIdx + 1) % cameras!.length;
-    await cameraController?.dispose(); //kapat
-    loadCamera(); //yeniden yükle
+    // await cameraController?.dispose(); //kapat
+    initState(); //yeniden yükle
   }
 
   @override
@@ -160,11 +168,11 @@ class _CameraPageState extends State<CameraPage> {
           ),
         ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              height: 50,
+              height: 10,
             ),
             Stack(
               children: [
@@ -173,25 +181,33 @@ class _CameraPageState extends State<CameraPage> {
                     ? CameraPreview(cameraController!)
                     : const Center(child: CircularProgressIndicator()),
                 Positioned(
-                  bottom: 20,
-                  left: 20,
+                  bottom: 15,
+                  left: 15,
                   child: Text(
                     "Şu anki Duygu: $emotion",
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20,
                       color: Theme.of(context).colorScheme.inversePrimary,
                     ),
                   ),
                 ),
                 Positioned(
-                  bottom: 20,
-                  right: 20,
+                  bottom: 15,
+                  right: 15,
                   child: IconButton(
                     icon: Icon(Icons.switch_camera,
                         color: Theme.of(context).colorScheme.inversePrimary),
                     onPressed: switchCamera,
                   ),
                 ),
+              ],
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Circular_arc(progress: progress),
+                SizedBox(width: 45),
               ],
             ),
           ],

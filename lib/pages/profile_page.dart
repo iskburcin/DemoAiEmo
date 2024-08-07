@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demoaiemo/util/labeled_location_button.dart';
+import 'package:demoaiemo/util/labeled_radio_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({super.key});
@@ -33,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
       isEditing = true;
       nameController.text = user?['Name'] ?? '';
       surnameController.text = user?['Surname'] ?? '';
-      ageController.text = user?['Age'] ?? '';
+      ageController.text = user?['Age'].toString() ?? '';
       genderController.text = user?['Gender'] ?? '';
       occupationController.text = user?['Occupation'] ?? '';
       locationController.text = user?['Location'] ?? '';
@@ -48,7 +50,7 @@ class _ProfilePageState extends State<ProfilePage> {
           .update({
         'Name': nameController.text,
         'Surname': surnameController.text,
-        'Age': ageController.text,
+        'Age': int.parse(ageController.text),
         'Gender': genderController.text,
         'Occupation': occupationController.text,
         'Location': locationController.text,
@@ -127,7 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
         const SizedBox(height: 20),
         Divider(color: Theme.of(context).colorScheme.onSurface, thickness: 1),
         const SizedBox(height: 20),
-        ProfileDetailRow(label: "Yaş", value: user?['Age']),
+        ProfileDetailRow(label: "Yaş", value: user?['Age'].toString()),
         ProfileDetailRow(label: "Cinsiyet", value: user?['Gender']),
         ProfileDetailRow(label: "Meslek", value: user?['Occupation']),
         ProfileDetailRow(label: "Konum", value: user?['Location']),
@@ -135,73 +137,94 @@ class _ProfilePageState extends State<ProfilePage> {
       ],
     );
   }
+String selectedGender = "Kadın";
 
   Widget buildEditForm(BuildContext context) {
-    return Expanded(
-      child: ListView(
-        padding: const EdgeInsets.all(10.0),
-        children: [
-          CircleAvatar(
-            radius: 64,
-            backgroundColor: Theme.of(context).colorScheme.primary,
-            child: const Icon(Icons.person, size: 64, color: Colors.white),
-          ),
-          const SizedBox(height: 20),
-          TextField(
-            controller: nameController,
-            decoration: const InputDecoration(labelText: 'Name'),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: surnameController,
-            decoration: const InputDecoration(labelText: 'Surname'),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: ageController,
-            decoration: const InputDecoration(labelText: 'Age'),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: genderController,
-            decoration: const InputDecoration(labelText: 'Gender'),
-          ),
-          const SizedBox(height: 10),
-          TextField(
-            controller: occupationController,
-            decoration: const InputDecoration(labelText: 'Occupation'),
-          ),
-          const SizedBox(height: 10),
-          Row(
+    return Column(
+      children: [
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.all(10.0),
             children: [
-              Expanded(
-                child: TextField(
-                  controller: locationController,
-                  decoration: const InputDecoration(labelText: 'Location'),
+              CircleAvatar(
+                radius: 64,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                child: const Icon(Icons.person, size: 64, color: Colors.white),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Adınız'),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: surnameController,
+                decoration: const InputDecoration(labelText: 'Soyadınız'),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: ageController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Yaşınız',
                 ),
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
               ),
-              const SizedBox(
-                width: 10,
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Text("Cinsiyetiniz",style: TextStyle(fontWeight: FontWeight.bold),),
+                  LabeledRadio(
+                  groupValue: selectedGender,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedGender = value;
+                    });
+                  },
+                  controller: genderController,
+                          ),
+                ],
               ),
-              Expanded(
-                child: LabeledLocationButton(
-                  controller: locationController,
+              const SizedBox(height: 10),
+              TextField(
+                controller: occupationController,
+                decoration: const InputDecoration(labelText: 'Mesleğiniz'),
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: locationController,
+                      decoration: const InputDecoration(labelText: 'Konumunuz'),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: LabeledLocationButton(
+                      controller: locationController,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: saveProfile,
+                icon: const Icon(Icons.save),
+                label: const Text("Kaydet"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  iconColor: Theme.of(context).colorScheme.primary,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 20),
-          ElevatedButton.icon(
-            onPressed: saveProfile,
-            icon: const Icon(Icons.save),
-            label: const Text("Kaydet"),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              iconColor: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
