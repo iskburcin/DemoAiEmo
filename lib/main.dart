@@ -62,7 +62,7 @@ class MainApp extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) {
               return ActivityPage(
-                suggestion: args['suggestion'],
+                suggestion: args['suggestion'], mood: '',
               );
             },
           );
