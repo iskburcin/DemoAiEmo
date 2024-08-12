@@ -249,7 +249,7 @@ class _RegisterPageState extends State<RegisterPage> {
         'Surname': surnameController.text,
         'Gender': genderController.text,
         'Age': int.parse(ageController.text),
-        'Occupation': occupationController.text,
+        'Occupation': occupationController.text, 
         'Location': locationController.text,
       });
     }
