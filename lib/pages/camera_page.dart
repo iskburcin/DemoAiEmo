@@ -1,7 +1,6 @@
 import 'package:demoaiemo/util/progress_arc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tflite_v2/tflite_v2.dart';
 import 'package:camera/camera.dart';
@@ -18,11 +17,10 @@ class _CameraPageState extends State<CameraPage> {
   CameraImage? cameraImage;
   CameraController? cameraController;
   CameraDevice? cameraDevice;
-  // Interpreter? interpreter;
   int selectedCamIdx = 1;
   double progress = 0.0; //progress of emotion prediction
 
-  String? emotion = "Mutlu"; //default duygu
+  String? emotion= "Mutlu"; //default duygu
 
   Map<String, int> emotionCounts = {
     "Öfkeli": 0,
@@ -106,16 +104,12 @@ class _CameraPageState extends State<CameraPage> {
             isBackButtonOn = false;
           } else if (emotionCounts[emotion] != null &&
               emotionCounts[emotion]! >= 50) {
-            // yoğun algılanan duyguyu printle
             Navigator.pushReplacementNamed(context, '/suggestionpage',
                 arguments: {"emotion": emotion});
             //önce sayfayı yönlendir, sonra camera ve modeli kapat - tam tersini sakın yapma
             await stopCameraAndModel();
           }
         }
-        // setState(() {
-        //   progress = (progress + 0.01) % 1.0; // Update the progress
-        // });
       } catch (e) {
         debugPrint("Error running model: $e");
       } finally {
@@ -140,13 +134,12 @@ class _CameraPageState extends State<CameraPage> {
   @override
   void dispose() {
     stopCameraAndModel();
-
     super.dispose();
   }
 
   void switchCamera() async {
     selectedCamIdx = (selectedCamIdx + 1) % cameras!.length;
-    // await cameraController?.dispose(); //kapat
+    await cameraController?.dispose(); //kapat
     initState(); //yeniden yükle
   }
 

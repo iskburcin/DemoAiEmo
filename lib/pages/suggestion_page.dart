@@ -17,6 +17,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
   String? _mostFrequentActivityUser; // Kullanıcının en çok tercih ettiği aktiviteyi tutar
   String? _mostFrequentActivityAll; // Tüm kullanıcıların en çok tercih ettiği aktiviteyi tutar.
   bool _isLoading = true; // Verilerin yüklenip yüklenmediğini belirler.
+  String url = 'http://192.168.1.91:5000';
 
   @override
   void didChangeDependencies() {
@@ -49,7 +50,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
 
       try {
         final response = await http.post(
-          Uri.parse('http://192.168.137.23:5000/predict'),
+          Uri.parse(url+'/predict'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -65,45 +66,52 @@ class _SuggestionPageState extends State<SuggestionPage> {
         print('Response Body: ${response.body}');
 
         if (response.statusCode == 200) {
-          final decodedResponse = jsonDecode(response.body);
-          if (decodedResponse['predictions'] != null) {
+        final decodedResponse = jsonDecode(response.body);
+        if (decodedResponse['predictions'] != null) {
+          if (mounted) {
             setState(() {
               _activitySuggestions = List<String>.from(decodedResponse['predictions']);
               _isLoading = false;
             });
-            print('Tahminler: $_activitySuggestions');
-          } else {
+          }
+        } else {
+          if (mounted) {
             setState(() {
               _activitySuggestions = ["No suggestions found."];
               _isLoading = false;
             });
           }
-        } else {
+        }
+      } else {
+        if (mounted) {
           setState(() {
             _activitySuggestions = ["Failed to get suggestions."];
             _isLoading = false;
           });
-          print('Tahmin işlemi başarisiz oldu. Status Code: ${response.statusCode}');
         }
-      } catch (e) {
+      }
+    } catch (e) {
+      if (mounted) {
         setState(() {
           _activitySuggestions = ["Error occurred: $e"];
           _isLoading = false;
         });
-        print('Hata: $e');
       }
-    } else {
+    }
+  } else {
+    if (mounted) {
       setState(() {
         _activitySuggestions = ["Invalid arguments received."];
         _isLoading = false;
       });
     }
   }
+  }
 
   Future<void> _saveUserSelection(String userId, String mood, String suggestion) async {
     // Kullanıcının yaptığı seçimi API'ye göndererek kaydeder.
     final response = await http.post(
-      Uri.parse('http://192.168.137.23:5000/save_selection'),
+      Uri.parse(url+'/save_selection'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -155,7 +163,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
 
       try {
         final response = await http.post(
-          Uri.parse('http://192.168.137.23:5000/get_most_frequent_activity'),
+          Uri.parse(url+'/get_most_frequent_activity'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -192,7 +200,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
 
       try {
         final response = await http.post(
-          Uri.parse('http://192.168.137.23:5000/get_most_frequent_activity'),
+          Uri.parse(url+'/get_most_frequent_activity'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
