@@ -106,15 +106,15 @@ class _SuggestionPageState extends State<SuggestionPage> {
   }
   }
 
-<<<<<<< HEAD
+
   Future<void> _saveUserSelection(String userId, String mood, String suggestion) async {
     // Kullanıcının yaptığı seçimi API'ye göndererek kaydeder.
     final response = await http.post(
-<<<<<<< HEAD
+
       Uri.parse('http://192.168.137.80:5000/save_selection'),
-=======
-      Uri.parse(url+'/save_selection'),
->>>>>>> f896e5952086f8272b4450b830abec6e47384c21
+
+    
+
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -130,8 +130,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
     }
   }
 
-=======
->>>>>>> d6730dc1f1f45e20654721497b87c235082f06c9
+
   void _navigateToActivityPage(String suggestion) async {
     final args = ModalRoute.of(context)?.settings.arguments;
     String mood = args is Map<String, dynamic> ? args["emotion"] : '';
@@ -157,11 +156,11 @@ class _SuggestionPageState extends State<SuggestionPage> {
 
       try {
         final response = await http.post(
-<<<<<<< HEAD
+
           Uri.parse('http://192.168.137.80:5000/get_most_frequent_activity'),
-=======
-          Uri.parse(url+'/get_most_frequent_activity'),
->>>>>>> f896e5952086f8272b4450b830abec6e47384c21
+
+         
+
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -196,11 +195,11 @@ class _SuggestionPageState extends State<SuggestionPage> {
 
       try {
         final response = await http.post(
-<<<<<<< HEAD
+
           Uri.parse('http://192.168.137.80:5000/get_most_frequent_activity'),
-=======
-          Uri.parse(url+'/get_most_frequent_activity'),
->>>>>>> f896e5952086f8272b4450b830abec6e47384c21
+
+         
+
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
