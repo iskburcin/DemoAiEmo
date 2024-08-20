@@ -50,7 +50,7 @@ class MainApp extends StatelessWidget {
       home: const AuthPage(),
       theme: Provider.of<ThemeProvider>(context).themeData,
       routes: {
-        '/homepage': (context) => const HomePage(),
+        '/homepage': (context) => HomePage(),
         '/camerapage': (context) => const CameraPage(),
         '/profilepage': (context) => ProfilePage(),
         '/settingpage': (context) => const SettingPage(),

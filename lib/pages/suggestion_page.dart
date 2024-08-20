@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
-import 'activity_page.dart'; // Aktivite sayfasını içe aktarıyoruz
+import '../util/suggestion_toggles.dart';
 
 class SuggestionPage extends StatefulWidget {
   const SuggestionPage({super.key});
@@ -13,221 +13,177 @@ class SuggestionPage extends StatefulWidget {
 }
 
 class _SuggestionPageState extends State<SuggestionPage> {
-  List<String> _activitySuggestions = [];
-  String? _mostFrequentActivityUser; // Kullanıcının en çok tercih ettiği aktiviteyi tutar
-  String? _mostFrequentActivityAll; // Tüm kullanıcıların en çok tercih ettiği aktiviteyi tutar.
-  bool _isLoading = true; // Verilerin yüklenip yüklenmediğini belirler.
-  String url = 'http://192.168.1.91:5000';
+  String? detectedEmotion;
+  List<String> _modelBasedSuggestions = [];
+  List<String> _myDecisionSuggestions = [];
+  List<String> _mostChosenSuggestions = [];
+  bool _isLoading = true;
+  String url = 'http://192.168.137.1:5000';
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _fetchActivitySuggestion(); // Fonksiyonu çağrılır.
+    _fetchUserEmotion();
+    _fetchActivitySuggestion();
+    _getMostFrequentActivityUser();
+    _getMostFrequentActivityAll();
+  }
+
+  Future<DocumentSnapshot?> _getUserDocument() async {
+    try {
+      return await FirebaseFirestore.instance
+          .collection("Users")
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .get();
+    } catch (e) {
+      print('Error fetching user document: $e');
+      return null;
+    }
   }
 
   Future<void> _fetchActivitySuggestion() async {
-    final args = ModalRoute.of(context)?.settings.arguments;
+    final args = _getRouteArguments();
+    if (args == null) return;
 
-    if (args is Map<String, dynamic>) {
-      String emotion = args["emotion"];
-      User user = FirebaseAuth.instance.currentUser!;
-      DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection("Users")
-          .doc(user.email)
-          .get();
+    final userDoc = await _getUserDocument();
+    if (userDoc == null) return;
 
-      int age;
-      if (userDoc['Age'] is String) {
-        age = int.parse(userDoc['Age']);
-      } else {
-        age = userDoc['Age'];
-      }
+    int age;
+    if (userDoc['Age'] is String) {
+      age = int.parse(userDoc['Age']);
+    } else {
+      age = userDoc['Age'];
+    }
 
-      String gender = userDoc['Gender'];
-      String job = userDoc['Occupation'];
+    String gender = userDoc['Gender'];
+    String job = userDoc['Occupation'];
 
-      try {
-        final response = await http.post(
-          Uri.parse(url+'/predict'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, dynamic>{
-            'yas': age,
-            'meslek': job,
-            'cinsiyet': gender,
-            'mood': emotion,
-          }),
-        );
+    try {
+      final response = await _postRequest('/predict', {
+        'yas': age,
+        'meslek': job,
+        'cinsiyet': gender,
+        'mood': args["emotion"],
+      });
 
-        print('Status Code: ${response.statusCode}');
-        print('Response Body: ${response.body}');
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
 
-        if (response.statusCode == 200) {
+      if (response.statusCode == 200) {
         final decodedResponse = jsonDecode(response.body);
         if (decodedResponse['predictions'] != null) {
-          if (mounted) {
-            setState(() {
-              _activitySuggestions = List<String>.from(decodedResponse['predictions']);
-              _isLoading = false;
-            });
-          }
-        } else {
-          if (mounted) {
-            setState(() {
-              _activitySuggestions = ["No suggestions found."];
-              _isLoading = false;
-            });
-          }
-        }
-      } else {
-        if (mounted) {
           setState(() {
-            _activitySuggestions = ["Failed to get suggestions."];
+            _modelBasedSuggestions =
+                List<String>.from(decodedResponse['predictions']);
+            _isLoading = false;
+          });
+        } else {
+          setState(() {
+            _modelBasedSuggestions = ["No suggestions found."];
             _isLoading = false;
           });
         }
-      }
-    } catch (e) {
-      if (mounted) {
+      } else {
         setState(() {
-          _activitySuggestions = ["Error occurred: $e"];
+          _modelBasedSuggestions = ["Failed to get suggestions."];
           _isLoading = false;
         });
       }
-    }
-  } else {
-    if (mounted) {
+    } catch (e) {
       setState(() {
-        _activitySuggestions = ["Invalid arguments received."];
+        _modelBasedSuggestions = ["Error occurred: $e"];
         _isLoading = false;
       });
     }
   }
-  }
-
-<<<<<<< HEAD
-  Future<void> _saveUserSelection(String userId, String mood, String suggestion) async {
-    // Kullanıcının yaptığı seçimi API'ye göndererek kaydeder.
-    final response = await http.post(
-      Uri.parse(url+'/save_selection'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'user_id': userId,
-        'mood': mood,
-        'suggestion': suggestion,
-      }),
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to save selection');
-    }
-  }
-
-=======
->>>>>>> d6730dc1f1f45e20654721497b87c235082f06c9
-  void _navigateToActivityPage(String suggestion) async {
-    final args = ModalRoute.of(context)?.settings.arguments;
-    String mood = args is Map<String, dynamic> ? args["emotion"] : '';
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ActivityPage(
-          suggestion: suggestion,
-          mood: mood,
-        ),
-      ),
-    );
-  }
 
   Future<void> _getMostFrequentActivityUser() async {
-    final args = ModalRoute.of(context)?.settings.arguments;
+    final args = _getRouteArguments();
+    if (args == null) return;
 
-    if (args is Map<String, dynamic>) {
-      String emotion = args["emotion"];
-      User user = FirebaseAuth.instance.currentUser!;
-      String userId = user.email!;
+    User user = FirebaseAuth.instance.currentUser!;
+    String userId = user.email!;
 
-      try {
-        final response = await http.post(
-          Uri.parse(url+'/get_most_frequent_activity'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, dynamic>{
-            'user_id': userId,
-            'mood': emotion,
-          }),
-        );
+    try {
+      final response = await _postRequest('/get_most_frequent_activity', {
+        'user_id': userId,
+        'mood': args["emotion"],
+      });
 
-        print('Status Code: ${response.statusCode}');
-        print('Response Body: ${response.body}');
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
 
-        if (response.statusCode == 200) {
-          final decodedResponse = jsonDecode(response.body);
-          setState(() {
-            _mostFrequentActivityUser = decodedResponse['most_frequent_activity_user'];
-          });
-        } else {
-          print('Most frequent activity request failed. Status Code: ${response.statusCode}');
-        }
-      } catch (e) {
-        print('Error: $e');
+      if (response.statusCode == 200) {
+        final decodedResponse = jsonDecode(response.body);
+        setState(() {
+          _myDecisionSuggestions =
+              List<String>.from(decodedResponse['most_frequent_activity_user']);
+        });
+      } else {
+        print(
+            'Most frequent activity request failed. Status Code: ${response.statusCode}');
       }
+    } catch (e) {
+      print('Error: $e');
     }
   }
 
   Future<void> _getMostFrequentActivityAll() async {
-    final args = ModalRoute.of(context)?.settings.arguments;
+    final args = _getRouteArguments();
+    if (args == null) return;
 
-    if (args is Map<String, dynamic>) {
-      String emotion = args["emotion"];
+    try {
+      final response = await _postRequest('/get_most_frequent_activity', {
+        'user_id': 'all_users', // Genel kullanıcıları temsil eden bir kimlik
+        'mood': args["emotion"],
+      });
 
-      try {
-        final response = await http.post(
-          Uri.parse(url+'/get_most_frequent_activity'),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(<String, dynamic>{
-            'user_id': 'all_users', // Genel kullanıcıları temsil eden bir kimlik
-            'mood': emotion,
-          }),
-        );
+      print('Status Code: ${response.statusCode}');
+      print('Response Body: ${response.body}');
 
-        print('Status Code: ${response.statusCode}');
-        print('Response Body: ${response.body}');
-
-        if (response.statusCode == 200) {
-          final decodedResponse = jsonDecode(response.body);
-          setState(() {
-            _mostFrequentActivityAll = decodedResponse['most_frequent_activity_all'];
-          });
-        } else {
-          print('Most frequent activity request failed. Status Code: ${response.statusCode}');
-        }
-      } catch (e) {
-        print('Error: $e');
+      if (response.statusCode == 200) {
+        final decodedResponse = jsonDecode(response.body);
+        setState(() {
+          _mostChosenSuggestions =
+              List<String>.from(decodedResponse['most_frequent_activity_all']);
+        });
+      } else {
+        print(
+            'Most frequent activity request failed. Status Code: ${response.statusCode}');
       }
+    } catch (e) {
+      print('Error: $e');
     }
   }
 
-  void _navigateToMostFrequentActivityPage(String activity) {
-    final args = ModalRoute.of(context)?.settings.arguments;
-    String mood = args is Map<String, dynamic> ? args["emotion"] : '';
+  // Helper Methods
+  Map<String, dynamic>? _getRouteArguments() {
+    return ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+  }
 
-    // En çok tercih edilen aktiviteyle birlikte ActivityPage sayfasına yönlendirir
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ActivityPage(
-          suggestion: activity,
-          mood: mood,
-        ),
-      ),
+  Future<void> _fetchUserEmotion() async {
+    final args = _getRouteArguments();
+    if (args != null) {
+      setState(() {
+        detectedEmotion = args['emotion'];
+        _isLoading = false;
+      });
+    } else {
+      setState(() {
+        detectedEmotion = 'Unknown';
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<http.Response> _postRequest(
+      String endpoint, Map<String, dynamic> body) async {
+    return await http.post(
+      Uri.parse('$url$endpoint'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8'
+      },
+      body: jsonEncode(body),
     );
   }
 
@@ -235,59 +191,29 @@ class _SuggestionPageState extends State<SuggestionPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Öneri Sayfası")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Algilanan Duygu: ${(ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?)?['emotion'] ?? 'Bilinmiyor'}",
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            _isLoading
-                ? const CircularProgressIndicator()
-                : Column(
-                    children: _activitySuggestions.map((suggestion) {
-                      return ElevatedButton(
-                        onPressed: () {
-                          _navigateToActivityPage(suggestion);
-                        },
-                        child: Text(suggestion),
-                      );
-                    }).toList(),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Algilanan Duygu: $detectedEmotion",
+                    style: const TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.bold),
                   ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _getMostFrequentActivityUser,
-              child: const Text("En Çok Tercih Edilen Kendi Seçimim"),
-            ),
-            if (_mostFrequentActivityUser != null) ...[
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  _navigateToMostFrequentActivityPage(_mostFrequentActivityUser!);
-                },
-                child: Text("En Çok Tercih Edilen Kendi Seçimim: $_mostFrequentActivityUser"),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: SuggestionToggles(
+                      modelBasedSuggestions: _modelBasedSuggestions,
+                      myDecisionSuggestions: _myDecisionSuggestions,
+                      mostChosenSuggestions: _mostChosenSuggestions,
+                    ),
+                  ),
+                ],
               ),
-            ],
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _getMostFrequentActivityAll,
-              child: const Text("En Çok Tercih Edilen Genel Seçim"),
             ),
-            if (_mostFrequentActivityAll != null) ...[
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  _navigateToMostFrequentActivityPage(_mostFrequentActivityAll!);
-                },
-                child: Text("En Çok Tercih Edilen Genel Seçim: $_mostFrequentActivityAll"),
-              ),
-            ]
-          ],
-        ),
-      ),
     );
   }
 }

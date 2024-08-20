@@ -41,24 +41,15 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-<<<<<<< HEAD
-linux/flutter/generated_plugin_registrant.cc
-linux/flutter/generated_plugins.cmake
-macos/Flutter/GeneratedPluginRegistrant.swift
-windows/flutter/generated_plugin_registrant.cc
-windows/flutter/generated_plugins.cmake
 pubspec.lock
-lib/pages/suggestion_page.dart
-=======
+
 pubspec.lock
-pubspec.lock
-linux/flutter/generated_plugin_registrant.cc
-linux/flutter/generated_plugin_registrant.h
+
 linux/flutter/generated_plugins.cmake
 macos/Flutter/GeneratedPluginRegistrant.swift
 windows/flutter/generated_plugin_registrant.cc
 windows/flutter/generated_plugin_registrant.h
 windows/flutter/generated_plugins.cmake
-pubspec.lock
-.gitignore
->>>>>>> d6730dc1f1f45e20654721497b87c235082f06c9
+linux/flutter/generated_plugin_registrant.cc
+linux/flutter/generated_plugin_registrant.h
+

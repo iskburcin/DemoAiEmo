@@ -36,6 +36,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '240478960480',
     projectId: 'aiemo-704b0',
     authDomain: 'aiemo-704b0.firebaseapp.com',
+    databaseURL: 'https://aiemo-704b0-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'aiemo-704b0.appspot.com',
     measurementId: 'G-XJ8SH205EQ',
   );
@@ -45,6 +46,7 @@ class DefaultFirebaseOptions {
     appId: '1:240478960480:android:a70149d39de3b062c5bc05',
     messagingSenderId: '240478960480',
     projectId: 'aiemo-704b0',
+    databaseURL: 'https://aiemo-704b0-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'aiemo-704b0.appspot.com',
   );
 
@@ -53,6 +55,7 @@ class DefaultFirebaseOptions {
     appId: '1:240478960480:ios:0f283f3295483624c5bc05',
     messagingSenderId: '240478960480',
     projectId: 'aiemo-704b0',
+    databaseURL: 'https://aiemo-704b0-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'aiemo-704b0.appspot.com',
     iosBundleId: 'com.example.demoaiemo',
   );
@@ -62,6 +65,7 @@ class DefaultFirebaseOptions {
     appId: '1:240478960480:ios:0f283f3295483624c5bc05',
     messagingSenderId: '240478960480',
     projectId: 'aiemo-704b0',
+    databaseURL: 'https://aiemo-704b0-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'aiemo-704b0.appspot.com',
     iosBundleId: 'com.example.demoaiemo',
   );
@@ -72,6 +76,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '240478960480',
     projectId: 'aiemo-704b0',
     authDomain: 'aiemo-704b0.firebaseapp.com',
+    databaseURL: 'https://aiemo-704b0-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'aiemo-704b0.appspot.com',
     measurementId: 'G-C42CP4MRCB',
   );
