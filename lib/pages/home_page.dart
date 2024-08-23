@@ -1,59 +1,87 @@
+import 'package:demoaiemo/database/firestore.dart';
 import 'package:demoaiemo/util/my_drawer.dart';
+import 'package:demoaiemo/util/my_list_tile.dart';
+import 'package:demoaiemo/util/my_textfields.dart';
+import 'package:demoaiemo/util/my_post_button.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomePage extends StatelessWidget {
+  HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
+  FirestoreDatabase databse = FirestoreDatabase();
+  final TextEditingController newPostController = TextEditingController();
 
-class _HomePageState extends State<HomePage> {
+  void postMessage() {
+    if (newPostController.text.isNotEmpty) {
+      String message = newPostController.text;
+      databse.addPost(message);
+    }
+    newPostController.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("AIEmo"),
       ),
+      drawer: const MyDrawer(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         // padding:const EdgeInsets.only(left: 120,right: 120,top: 120),
         children: [
-          Column(
-            children: [
-              Container(
-                height: 50,
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 25),
-                width: MediaQuery.sizeOf(context).width,
-                padding: const EdgeInsets.all(20),
-                decoration:
-                    const BoxDecoration(color: Color.fromARGB(255, 104, 5, 5)),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Hello BRM !!  ",
-                      style: TextStyle(fontSize: 30),
-                    ),
-                    Icon(Icons.waving_hand_outlined)
-                  ],
+          Expanded(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(25),
+                  child: Row(
+                    children: [
+                      Expanded(
+                          child: MyTextfield(
+                              hintText: "Bir şeyler paylaş",
+                              obscureText: false,
+                              controller: newPostController)),
+                      MyPostButton(onTap: postMessage)
+                    ],
+                  ),
                 ),
-              ),
-              Container(
-                height: 70,
-              ),
-              const Padding(
-                padding: EdgeInsets.all(25.0),
-                child: Text(
-                  "                SELAM!!!\nBAŞLAMAK İÇİN AŞAĞIDAKİ\n             BUTONA BAS ",
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
+                StreamBuilder(
+                    stream: databse.getPostsStream(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+            
+                      final posts = snapshot.data!.docs;
+                      if (snapshot.data == null || posts.isEmpty) {
+                        return const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(25),
+                            child: Text("No posts... post something!"),
+                          ),
+                        );
+                      }
+                      return Expanded(
+                          child: ListView.builder(
+                              itemCount: posts.length,
+                              itemBuilder: (context, index) {
+                                final post = posts[index];
+                                String message = post['PostMessage'];
+                                String userEmail = post['UserEmail'];
+                                String Timestamp = post['TimeStamp'].toString();
+            
+                                return MyListTile(
+                                    title: message, subTitle: userEmail);
+                              }));
+                    })
+              ],
+            ),
           ),
           Container(
+            // Camera Icon
             padding: const EdgeInsets.all(15),
             height: 100,
             width: 100,
@@ -72,7 +100,6 @@ class _HomePageState extends State<HomePage> {
           )
         ],
       ),
-      drawer: const MyDrawer(),
     );
   }
 }

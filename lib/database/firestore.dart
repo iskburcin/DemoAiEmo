@@ -1,6 +1,6 @@
 /*
 Kullanıcıların paylaştığı postları burada tutar.
-Firebasedeki "Post" koleksiyonununu içerir
+Firebasedeki "Posts" koleksiyonununu içerir
 
 Her post:
 - mesaj
@@ -26,6 +26,13 @@ class FirestoreDatabase{
       }
     );
   }
-  // Stream<QuerySnapshot> getPos
+  Stream<QuerySnapshot> getPostsStream(){
+    final postsStream = FirebaseFirestore.instance
+    .collection('Posts')
+    .orderBy('TimeStamp', descending: true)
+    .snapshots();
+
+    return postsStream;
+  }
 
 }

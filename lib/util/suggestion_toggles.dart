@@ -20,12 +20,17 @@ class _SuggestionTogglesState extends State<SuggestionToggles> {
   bool _modelBasedExpanded = false;
   bool _myDecisionExpanded = false;
   bool _mostChosenExpanded = false;
+  Map<String, dynamic> _getRouteArguments() {
+    return ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+  }
 
   void _navigateToActivityPage(String suggestion) {
+    final args = _getRouteArguments();
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ActivityPage(suggestion: suggestion, mood: "happy"), // Example mood
+        builder: (context) =>
+            ActivityPage(suggestion: suggestion, mood: args["emotion"]), // Example mood
       ),
     );
   }
@@ -55,9 +60,9 @@ class _SuggestionTogglesState extends State<SuggestionToggles> {
                 _modelBasedExpanded = expanded;
               });
             },
-            children: _modelBasedExpanded 
-              ? [_buildSuggestionList(widget.modelBasedSuggestions)] 
-              : [],
+            children: _modelBasedExpanded
+                ? [_buildSuggestionList(widget.modelBasedSuggestions)]
+                : [],
           ),
           ExpansionTile(
             title: Text('My Decision Based Suggestions'),
@@ -66,9 +71,9 @@ class _SuggestionTogglesState extends State<SuggestionToggles> {
                 _myDecisionExpanded = expanded;
               });
             },
-            children: _myDecisionExpanded 
-              ? [_buildSuggestionList(widget.myDecisionSuggestions)] 
-              : [],
+            children: _myDecisionExpanded
+                ? [_buildSuggestionList(widget.myDecisionSuggestions)]
+                : [],
           ),
           ExpansionTile(
             title: Text('Most Chosen Suggestions'),
@@ -77,9 +82,9 @@ class _SuggestionTogglesState extends State<SuggestionToggles> {
                 _mostChosenExpanded = expanded;
               });
             },
-            children: _mostChosenExpanded 
-              ? [_buildSuggestionList(widget.mostChosenSuggestions)] 
-              : [],
+            children: _mostChosenExpanded
+                ? [_buildSuggestionList(widget.mostChosenSuggestions)]
+                : [],
           ),
         ],
       ),

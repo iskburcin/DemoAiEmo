@@ -18,7 +18,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
   List<String> _myDecisionSuggestions = [];
   List<String> _mostChosenSuggestions = [];
   bool _isLoading = true;
-  String url = 'http://192.168.137.1:5000';
+  String url = 'http:/192.168.1.106:5000';
 
   @override
   void didChangeDependencies() {
@@ -44,6 +44,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
   Future<void> _fetchActivitySuggestion() async {
     final args = _getRouteArguments();
     if (args == null) return;
+    print(args['emotion']);
 
     final userDoc = await _getUserDocument();
     if (userDoc == null) return;
@@ -65,6 +66,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
         'cinsiyet': gender,
         'mood': args["emotion"],
       });
+      
 
       print('Status Code: ${response.statusCode}');
       print('Response Body: ${response.body}');

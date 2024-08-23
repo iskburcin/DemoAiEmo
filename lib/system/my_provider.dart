@@ -13,8 +13,7 @@ class MyProvider extends ChangeNotifier {
   }
 
   Future<String> makePostRequest(String base64Image) async {
-    String url = 'http://192.168.1.91:5000/predict_emotion';
-    // String url = 'http://10.73.52.29:5000/predict_emotion';
+    String url = 'http://192.168.1.106:5000/predict';
     final response = await http.post(
       Uri.parse(url),
       headers: {'Content-Type': 'application/json'},

@@ -56,19 +56,6 @@ class MainApp extends StatelessWidget {
         '/settingpage': (context) => const SettingPage(),
         '/suggestionpage': (context) => const SuggestionPage(),
       },
-      onGenerateRoute: (RouteSettings settings) {
-        if (settings.name == '/activitypage') {
-          final args = settings.arguments as Map<String, dynamic>;
-          return MaterialPageRoute(
-            builder: (context) {
-              return ActivityPage(
-                suggestion: args['suggestion'], mood: '',
-              );
-            },
-          );
-        }
-        return null;
-      },
     );
   }
 }

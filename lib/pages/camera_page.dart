@@ -34,10 +34,10 @@ class _CameraPageState extends State<CameraPage> {
   List<String>? labels;
   @override
   void initState() {
-    super.initState();
     // get available cameras
     loadModel();
     loadCamera();
+    super.initState();
   }
 
   Future<CameraController?> loadCamera() async {
@@ -49,7 +49,7 @@ class _CameraPageState extends State<CameraPage> {
     setState(() {
       cameraController!.startImageStream((imageStream) async {
         //kameradan resimleri al
-        if (!isModelBusy) {
+         if (!isModelBusy) {
           cameraImage =
               imageStream; //modele java formatında resim yüklemek için
           runModel(cameraImage);
@@ -121,14 +121,12 @@ class _CameraPageState extends State<CameraPage> {
 
   Future<void> stopCameraAndModel() async {
     await Tflite.close(); //önce modeli durdur
-    if (cameraController != null) {
       try {
         await cameraController!.stopImageStream();
         await cameraController!.dispose();
       } catch (e) {
         debugPrint("Error stopping camera: $e");
       } //bundan sonra finally olarak camcontrlr ı null yapıyordun - sakın yapma
-    }
   }
 
   @override

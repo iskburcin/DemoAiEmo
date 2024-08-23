@@ -4,11 +4,11 @@ final List<String> genderList = ['Erkek', 'Kadın'];
 
 class LabeledRadio extends StatefulWidget {
   const LabeledRadio({
-    Key? key,
+    super.key,
     required this.groupValue,
     required this.onChanged,
     required this.controller,
-  }) : super(key: key);
+  });
 
   final String groupValue;
   final ValueChanged<String> onChanged;
