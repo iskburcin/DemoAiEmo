@@ -12,20 +12,52 @@ class ActivityPage extends StatelessWidget {
 
   const ActivityPage({super.key, required this.suggestion, required this.mood});
 
-  Future<void> _approveActivity() async {
+  Future<void> _approveActivity(BuildContext context) async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
     try {
-      await FirebaseFirestore.instance
-          .collection('Users')
-          .doc(user.email)
-          .collection('ApprovedActivities')
-          .add({
+      final userDoc = FirebaseFirestore.instance
+        .collection('Users')
+        .doc(user.email)
+        .collection('ApprovedActivities');
+    
+    // Check if the activity already exists
+    final querySnapshot = await userDoc
+        .where('activityName', isEqualTo: suggestion)
+        .where('mood', isEqualTo: mood)
+        .get();
+    
+    if (querySnapshot.docs.isEmpty) {
+      // Activity does not exist, add a new entry
+      await userDoc.add({
         'activityName': suggestion,
         'mood': mood,
         'approvalDate': DateTime.now().toIso8601String(),
+        'count': 1, // Initial count
       });
+    } else {
+      // Activity exists, update the count
+      final docId = querySnapshot.docs.single.id;
+      final docRef = userDoc.doc(docId);
+
+      await docRef.update({
+        'count': FieldValue.increment(1),
+        'lastApprovalDate': DateTime.now().toIso8601String(),
+      });
+    }
+
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Activity approved successfully!'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      // Redirect to ApprovedActivitiesPage
+      await Future.delayed(const Duration(
+          seconds: 2)); // Optional delay to let the snackbar display
 
       // Show success message or redirect to another page
     } catch (e) {
@@ -115,9 +147,9 @@ class ActivityPage extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 "Önerilen duygu durumu: $mood",
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
-              Spacer(),
+              const Spacer(),
               Text(
                 getActivitySuggestion(suggestion),
                 style: const TextStyle(fontSize: 18),
@@ -133,7 +165,12 @@ class ActivityPage extends StatelessWidget {
               // ),
               MyBotton(
                 text: "Etkinliği Onayla",
-                onTap: _approveActivity,
+                onTap: () => {
+                  _approveActivity(context),
+                  Navigator.pop(context),
+                  Navigator.pushReplacementNamed(
+                      context, '/apprrovedactivitiespage')
+                },
               )
             ],
           ),

@@ -209,7 +209,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       time: timestamp.toDate(),
                       onEdit: () => editMessage(postId, message, context),
                       actionType:
-                          'edit', // You can switch based on the action here
+                          'edit', 
                     );
                   },
                 );
