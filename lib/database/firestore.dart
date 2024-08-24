@@ -14,7 +14,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class FirestoreDatabase{
   User? user = FirebaseAuth.instance.currentUser;
-
   final CollectionReference post = FirebaseFirestore.instance.collection('Posts');
 
   Future<void> addPost(String message){
@@ -25,6 +24,12 @@ class FirestoreDatabase{
         'TimeStamp': Timestamp.now()
       }
     );
+  }
+  Future<void> updatePost(String postId, String updatedMessage) async {
+    await post.doc(postId).update({
+      'PostMessage': updatedMessage,
+      'TimeStamp': Timestamp.now(), // Optionally update timestamp
+    });
   }
   Stream<QuerySnapshot> getPostsStream(){
     final postsStream = FirebaseFirestore.instance

@@ -52,6 +52,20 @@ class MyDrawer extends StatelessWidget {
                     textColor: Theme.of(context).colorScheme.inversePrimary,
                     contentPadding: const EdgeInsets.only(left: 35),
                     leading: Icon(
+                      Icons.done_all_rounded, 
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                      ),
+                    title: const Text("O N A Y L A N A N L A R"),
+                    onTap: (){
+                      Navigator.pop(context);
+                      Navigator.pushNamed(context,'/apprrovedactivitiespage');
+                    },
+                  ),
+                  
+                  ListTile(
+                    textColor: Theme.of(context).colorScheme.inversePrimary,
+                    contentPadding: const EdgeInsets.only(left: 35),
+                    leading: Icon(
                       Icons.settings, 
                       color: Theme.of(context).colorScheme.inversePrimary,
                       ),

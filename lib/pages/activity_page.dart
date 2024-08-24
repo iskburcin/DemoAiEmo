@@ -132,8 +132,8 @@ class ActivityPage extends StatelessWidget {
               //   child: const Text("Bu Seçimi Kaydet"),
               // ),
               MyBotton(
-              text: "Etkinliği Onayla",
-              onTap: _approveActivity,
+                text: "Etkinliği Onayla",
+                onTap: _approveActivity,
               )
             ],
           ),

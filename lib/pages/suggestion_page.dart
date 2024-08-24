@@ -18,7 +18,7 @@ class _SuggestionPageState extends State<SuggestionPage> {
   List<String> _myDecisionSuggestions = [];
   List<String> _mostChosenSuggestions = [];
   bool _isLoading = true;
-  String url = 'http:/192.168.1.106:5000';
+  String url = 'http://192.168.1.110:5000';
 
   @override
   void didChangeDependencies() {
