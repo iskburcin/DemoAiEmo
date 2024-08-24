@@ -5,6 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../util/my_list_tile.dart';
+
 class ProfilePage extends StatefulWidget {
   ProfilePage({super.key});
 
@@ -29,6 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController genderController = TextEditingController();
   final TextEditingController occupationController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
+  final TextEditingController editPostController = TextEditingController();
 
   void enableEditing(Map<String, dynamic>? user) {
     setState(() {
@@ -59,6 +62,52 @@ class _ProfilePageState extends State<ProfilePage> {
         isEditing = false;
       });
     }
+  }
+
+  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
+      getUserPosts() async {
+    final userPosts = await FirebaseFirestore.instance
+        .collection('Posts')
+        .where('UserEmail', isEqualTo: currentUser!.email)
+        .get();
+    return userPosts.docs;
+  }
+
+  void editMessage(String postId, String currentMessage, BuildContext context) {
+    editPostController.text = currentMessage;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Gönderi Düzenleme'),
+          content: TextField(
+            controller: editPostController,
+            decoration: const InputDecoration(hintText: "Gönderini düzenle"),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('İptal'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (editPostController.text.isNotEmpty) {
+                  FirebaseFirestore.instance
+                      .collection('Posts')
+                      .doc(postId)
+                      .update({'PostMessage': editPostController.text});
+                }
+                Navigator.pop(context);
+              },
+              child: const Text('Kaydet'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -105,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget buildProfileView(BuildContext context, Map<String, dynamic>? user) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         CircleAvatar(
@@ -113,12 +162,12 @@ class _ProfilePageState extends State<ProfilePage> {
           backgroundColor: Theme.of(context).colorScheme.primary,
           child: const Icon(Icons.person, size: 64, color: Colors.white),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 5),
         Text(
           "${user?['Name']} ${user?['Surname']}",
           style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: 5),
         Text(
           user?['Email'] ?? '',
           style: TextStyle(
@@ -126,18 +175,55 @@ class _ProfilePageState extends State<ProfilePage> {
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 5),
         Divider(color: Theme.of(context).colorScheme.onSurface, thickness: 1),
-        const SizedBox(height: 20),
+        const SizedBox(height: 5),
         ProfileDetailRow(label: "Yaş", value: user?['Age'].toString()),
         ProfileDetailRow(label: "Cinsiyet", value: user?['Gender']),
         ProfileDetailRow(label: "Meslek", value: user?['Occupation']),
         ProfileDetailRow(label: "Konum", value: user?['Location']),
-        const SizedBox(height: 20),
+        const SizedBox(height: 5),
+        Divider(color: Theme.of(context).colorScheme.onSurface, thickness: 1),
+        const SizedBox(height: 5),
+        Expanded(
+          child:
+              FutureBuilder<List<QueryDocumentSnapshot<Map<String, dynamic>>>>(
+            future: getUserPosts(),
+            builder: (context, postSnapshot) {
+              if (postSnapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (postSnapshot.hasError) {
+                return Center(child: Text("Error: ${postSnapshot.error}"));
+              } else if (postSnapshot.hasData) {
+                final posts = postSnapshot.data!;
+                return ListView.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    final post = posts[index];
+                    String postId = post.id;
+                    String message = post['PostMessage'];
+                    Timestamp timestamp = post['TimeStamp'];
+
+                    return MyListTile(
+                      title: message,
+                      time: timestamp.toDate(),
+                      onEdit: () => editMessage(postId, message, context),
+                      actionType:
+                          'edit', // You can switch based on the action here
+                    );
+                  },
+                );
+              } else {
+                return const Center(child: Text("No posts found"));
+              }
+            },
+          ),
+        ),
       ],
     );
   }
-String selectedGender = "Kadın";
+
+  String selectedGender = "Kadın";
 
   Widget buildEditForm(BuildContext context) {
     return Column(
@@ -175,16 +261,19 @@ String selectedGender = "Kadın";
               const SizedBox(height: 10),
               Row(
                 children: [
-                  Text("Cinsiyetiniz",style: TextStyle(fontWeight: FontWeight.bold),),
+                  Text(
+                    "Cinsiyetiniz",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   LabeledRadio(
-                  groupValue: selectedGender,
-                  onChanged: (value) {
-                    setState(() {
-                      selectedGender = value;
-                    });
-                  },
-                  controller: genderController,
-                          ),
+                    groupValue: selectedGender,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedGender = value;
+                      });
+                    },
+                    controller: genderController,
+                  ),
                 ],
               ),
               const SizedBox(height: 10),

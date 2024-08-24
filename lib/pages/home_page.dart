@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demoaiemo/database/firestore.dart';
 import 'package:demoaiemo/util/my_drawer.dart';
 import 'package:demoaiemo/util/my_list_tile.dart';
@@ -8,13 +9,14 @@ import 'package:flutter/material.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  FirestoreDatabase databse = FirestoreDatabase();
+  FirestoreDatabase database = FirestoreDatabase();
   final TextEditingController newPostController = TextEditingController();
+  final TextEditingController editPostController = TextEditingController();
 
   void postMessage() {
     if (newPostController.text.isNotEmpty) {
       String message = newPostController.text;
-      databse.addPost(message);
+      database.addPost(message);
     }
     newPostController.clear();
   }
@@ -23,12 +25,12 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("AIEmo"),
+        centerTitle: true,
+        title: const Text("Y U Z U G"),
       ),
       drawer: const MyDrawer(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        // padding:const EdgeInsets.only(left: 120,right: 120,top: 120),
         children: [
           Expanded(
             child: Column(
@@ -47,14 +49,14 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
                 StreamBuilder(
-                    stream: databse.getPostsStream(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
+                  stream: database.getPostsStream(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
                       }
-            
+
                       final posts = snapshot.data!.docs;
                       if (snapshot.data == null || posts.isEmpty) {
                         return const Center(
@@ -71,10 +73,13 @@ class HomePage extends StatelessWidget {
                                 final post = posts[index];
                                 String message = post['PostMessage'];
                                 String userEmail = post['UserEmail'];
-                                String Timestamp = post['TimeStamp'].toString();
-            
+                                Timestamp timestamp = post['TimeStamp'];
+
                                 return MyListTile(
-                                    title: message, subTitle: userEmail);
+                                  title: message,
+                                  subTitle: userEmail,
+                                  time: timestamp.toDate(),
+                                );
                               }));
                     })
               ],
