@@ -4,21 +4,48 @@ import 'package:demoaiemo/util/my_drawer.dart';
 import 'package:demoaiemo/util/my_list_tile.dart';
 import 'package:demoaiemo/util/my_textfields.dart';
 import 'package:demoaiemo/util/my_post_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   HomePage({super.key});
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   FirestoreDatabase database = FirestoreDatabase();
   final TextEditingController newPostController = TextEditingController();
-  final TextEditingController editPostController = TextEditingController();
+  final TextEditingController personalActivityController =
+      TextEditingController();
+  User? user = FirebaseAuth.instance.currentUser;
 
-  void postMessage() {
-    if (newPostController.text.isNotEmpty) {
-      String message = newPostController.text;
-      database.addPost(message);
+  String? selectedMood;
+
+  List<String> moods = ["Öfkeli", "Mutlu", "Üzgün"];
+
+  void postMessage() async {
+    String postMessage = newPostController.text.trim();
+    String personalActivity = personalActivityController.text.trim();
+
+    if (postMessage.isNotEmpty && selectedMood != null && user != null) {
+      String? userEmail = user?.email;
+      await FirebaseFirestore.instance.collection('Posts').add({
+        'PostMessage': postMessage,
+        'activityName': personalActivity,
+        'mood': selectedMood,
+        'TimeStamp': Timestamp.now(),
+        'UserEmail': userEmail
+      });
+
+      // Clear the fields
+      newPostController.clear();
+      personalActivityController.clear();
+      setState(() {
+        selectedMood = null; // Reset the selected mood
+      });
     }
-    newPostController.clear();
   }
 
   @override
@@ -40,47 +67,92 @@ class HomePage extends StatelessWidget {
                   child: Row(
                     children: [
                       Expanded(
-                          child: MyTextfield(
-                              hintText: "Bir şeyler paylaş",
+                          child: Column(
+                        children: [
+                          DropdownButtonFormField<String>(
+                            value: selectedMood,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12)),
+                              labelText: "Nasıl Hissediyorsun?",
+                            ),
+                            items: moods.map((String mood) {
+                              return DropdownMenuItem<String>(
+                                value: mood,
+                                child: Text(mood),
+                              );
+                            }).toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                selectedMood = value;
+                              });
+                            },
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          MyTextfield(
+                            hintText: "Hadi bir etkinlik uydur ;)",
+                            obscureText: false,
+                            controller: personalActivityController,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          MyTextfield(
+                              hintText: "Bahset bakalım ",
                               obscureText: false,
-                              controller: newPostController)),
+                              controller: newPostController),
+                        ],
+                      )),
                       MyPostButton(onTap: postMessage)
                     ],
                   ),
                 ),
-                StreamBuilder(
-                  stream: database.getPostsStream(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                      }
-
-                      final posts = snapshot.data!.docs;
-                      if (snapshot.data == null || posts.isEmpty) {
+                FutureBuilder<List<DocumentSnapshot>>(
+                    future: database.getPostsStream(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
                         return const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(25),
-                            child: Text("No posts... post something!"),
-                          ),
+                          child: CircularProgressIndicator(),
                         );
                       }
-                      return Expanded(
-                          child: ListView.builder(
-                              itemCount: posts.length,
-                              itemBuilder: (context, index) {
-                                final post = posts[index];
-                                String message = post['PostMessage'];
-                                String userEmail = post['UserEmail'];
-                                Timestamp timestamp = post['TimeStamp'];
+                      if (snapshot.hasData) {
+                        final combinedPosts = snapshot.data!;
 
-                                return MyListTile(
-                                  title: message,
-                                  subTitle: userEmail,
-                                  time: timestamp.toDate(),
-                                );
-                              }));
+                        if (combinedPosts.isEmpty) {
+                          return const Center(
+                              child: Text("Henüz bir paylaşım yok."));
+                        }
+                        return Expanded(
+                            child: ListView.builder(
+                                itemCount: combinedPosts.length,
+                                itemBuilder: (context, index) {
+                                  final post = combinedPosts[index];
+                                  String message = post['PostMessage'];
+                                  String userEmail = post['UserEmail'];
+                                  Timestamp timestamp = post['TimeStamp'];
+                                  String? actName = (post.data() as Map<String,
+                                          dynamic>)['activityName'] ??
+                                      "";
+                                  String? mood = (post.data()
+                                          as Map<String, dynamic>)['mood'] ??
+                                      "";
+
+                                  return MyListTile(
+                                    title: [
+                                      if (actName != null && actName.isNotEmpty)
+                                        "Activite: $actName",
+                                      if (mood != null && mood.isNotEmpty) "Mod: $mood",
+                                      message
+                                    ].where((s) => s.isNotEmpty).join('\n'),
+                                    subTitle: userEmail,
+                                    time: timestamp.toDate(),
+                                  );
+                                }));
+                      } else {
+                        return const Center(child: Text("No data available."));
+                      }
                     })
               ],
             ),

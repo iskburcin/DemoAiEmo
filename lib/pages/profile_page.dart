@@ -64,13 +64,27 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
-  Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>>
-      getUserPosts() async {
+  Future<List<DocumentSnapshot<Object?>>> getUserPosts() async {
     final userPosts = await FirebaseFirestore.instance
         .collection('Posts')
         .where('UserEmail', isEqualTo: currentUser!.email)
         .get();
-    return userPosts.docs;
+    final activitiesSnapshot = await FirebaseFirestore.instance
+        .collection('PublishedActivities')
+        .where('UserEmail', isEqualTo: currentUser!.email)
+        .get();
+
+    List<DocumentSnapshot> combinedList = [
+      ...userPosts.docs,
+      ...activitiesSnapshot.docs,
+    ];
+    combinedList.sort((a, b) {
+      DateTime timestampA = (a['TimeStamp'] as Timestamp).toDate();
+      DateTime timestampB = (b['TimeStamp'] as Timestamp).toDate();
+      return timestampB.compareTo(timestampA); // Sort in descending order
+    });
+
+    return combinedList;
   }
 
   void editMessage(String postId, String currentMessage, BuildContext context) {
@@ -186,30 +200,43 @@ class _ProfilePageState extends State<ProfilePage> {
         Divider(color: Theme.of(context).colorScheme.onSurface, thickness: 1),
         const SizedBox(height: 5),
         Expanded(
-          child:
-              FutureBuilder<List<QueryDocumentSnapshot<Map<String, dynamic>>>>(
+          child: FutureBuilder<List<DocumentSnapshot>>(
             future: getUserPosts(),
-            builder: (context, postSnapshot) {
-              if (postSnapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (postSnapshot.hasError) {
-                return Center(child: Text("Error: ${postSnapshot.error}"));
-              } else if (postSnapshot.hasData) {
-                final posts = postSnapshot.data!;
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              if (snapshot.hasData) {
+                final combinedPosts = snapshot.data!;
+
+                if (combinedPosts.isEmpty) {
+                  return const Center(child: Text("Henüz bir paylaşım yok."));
+                }
                 return ListView.builder(
-                  itemCount: posts.length,
+                  itemCount: combinedPosts.length,
                   itemBuilder: (context, index) {
-                    final post = posts[index];
+                    final post = combinedPosts[index];
                     String postId = post.id;
                     String message = post['PostMessage'];
                     Timestamp timestamp = post['TimeStamp'];
+                    String? actName =
+                        (post.data() as Map<String, dynamic>)['activityName'] ??
+                            "";
+                    String? mood =
+                        (post.data() as Map<String, dynamic>)['mood'] ?? "";
 
                     return MyListTile(
-                      title: message,
+                      title: [
+                        if (actName != null && actName.isNotEmpty)
+                          "Activite: $actName",
+                        if (mood != null && mood.isNotEmpty) "Mod: $mood",
+                        message
+                      ].where((s) => s.isNotEmpty).join('\n'),
                       time: timestamp.toDate(),
                       onEdit: () => editMessage(postId, message, context),
-                      actionType:
-                          'edit', 
+                      actionType: 'edit',
                     );
                   },
                 );

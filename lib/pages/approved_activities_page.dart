@@ -33,15 +33,15 @@ class _ApprovedActivitiesPageState extends State<ApprovedActivitiesPage> {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
               }
-          
+
               final approvedActivities = snapshot.data!.docs;
-          
+
               if (approvedActivities.isEmpty) {
                 return const Center(
                   child: Text("Onaylanmış bir etkinlik yok."),
                 );
               }
-          
+
               return Expanded(
                 child: ListView.builder(
                   itemCount: approvedActivities.length,
@@ -69,12 +69,52 @@ class _ApprovedActivitiesPageState extends State<ApprovedActivitiesPage> {
   }
 
   Future<void> publishActivity(String activityName, String mood) async {
-    if (user != null) {
+    String comment = ''; // Initialize comment
+
+    // Show dialog for user to input comment before publishing
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Gönderi Paylaş'),
+          content: TextField(
+            onChanged: (value) {
+              comment = value;
+            },
+            decoration: InputDecoration(
+                hintText: "Biraz activitenden bahsetsene",
+                hintStyle:
+                    TextStyle(color: Theme.of(context).colorScheme.secondary)),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('İptal'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text(
+                'Paylaş',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    // Save the activity with comment in Firestore
+    if (user != null && comment.isNotEmpty) {
       await firestore.collection('PublishedActivities').add({
         'activityName': activityName,
         'mood': mood,
-        'userEmail': user!.email,
-        'timestamp': Timestamp.now(),
+        'UserEmail': user!.email,
+        'PostMessage': comment,
+        'TimeStamp': Timestamp.now(),
       });
     }
   }

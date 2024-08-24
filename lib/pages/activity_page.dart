@@ -18,36 +18,34 @@ class ActivityPage extends StatelessWidget {
 
     try {
       final userDoc = FirebaseFirestore.instance
-        .collection('Users')
-        .doc(user.email)
-        .collection('ApprovedActivities');
-    
-    // Check if the activity already exists
-    final querySnapshot = await userDoc
-        .where('activityName', isEqualTo: suggestion)
-        .where('mood', isEqualTo: mood)
-        .get();
-    
-    if (querySnapshot.docs.isEmpty) {
-      // Activity does not exist, add a new entry
-      await userDoc.add({
-        'activityName': suggestion,
-        'mood': mood,
-        'approvalDate': DateTime.now().toIso8601String(),
-        'count': 1, // Initial count
-      });
-    } else {
-      // Activity exists, update the count
-      final docId = querySnapshot.docs.single.id;
-      final docRef = userDoc.doc(docId);
+          .collection('Users')
+          .doc(user.email)
+          .collection('ApprovedActivities');
 
-      await docRef.update({
-        'count': FieldValue.increment(1),
-        'lastApprovalDate': DateTime.now().toIso8601String(),
-      });
-    }
+      // Check if the activity already exists
+      final querySnapshot = await userDoc
+          .where('activityName', isEqualTo: suggestion)
+          .where('mood', isEqualTo: mood)
+          .get();
 
+      if (querySnapshot.docs.isEmpty) {
+        // Activity does not exist, add a new entry
+        await userDoc.add({
+          'activityName': suggestion,
+          'mood': mood,
+          'approvalDate': DateTime.now().toIso8601String(),
+          'count': 1, // Initial count
+        });
+      } else {
+        // Activity exists, update the count
+        final docId = querySnapshot.docs.single.id;
+        final docRef = userDoc.doc(docId);
 
+        await docRef.update({
+          'count': FieldValue.increment(1),
+          'lastApprovalDate': DateTime.now().toIso8601String(),
+        });
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Activity approved successfully!'),
@@ -58,36 +56,8 @@ class ActivityPage extends StatelessWidget {
       // Redirect to ApprovedActivitiesPage
       await Future.delayed(const Duration(
           seconds: 2)); // Optional delay to let the snackbar display
-
-      // Show success message or redirect to another page
     } catch (e) {
       print('Error saving approved activity: $e');
-    }
-  }
-
-  Future<void> _saveUserSelection(BuildContext context, String userId,
-      String mood, String suggestion) async {
-    try {
-      final response = await http.post(
-        Uri.parse('http://192.168.1.106:5000/save_selection'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, dynamic>{
-          'user_id': userId,
-          'mood': mood,
-          'suggestion': suggestion,
-        }),
-      );
-
-      if (response.statusCode == 200) {
-        print('Selection saved successfully');
-      } else {
-        print(
-            'Failed to save selection. Status code: ${response.statusCode}, body: ${response.body}');
-      }
-    } catch (e) {
-      print('An error occurred: $e');
     }
   }
 

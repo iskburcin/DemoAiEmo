@@ -20,7 +20,9 @@ class MyTextfield extends StatelessWidget {
           decoration: InputDecoration(
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-              hintText: hintText),
+              hintText: hintText,
+              hintStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.secondary)),
           obscureText: obscureText,
         ),
       ],
