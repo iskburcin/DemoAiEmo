@@ -20,7 +20,7 @@ class _CameraPageState extends State<CameraPage> {
   int selectedCamIdx = 1;
   double progress = 0.0; //progress of emotion prediction
 
-  String? emotion= "Mutlu"; //default duygu
+  String? emotion = "Mutlu"; //default duygu
 
   Map<String, int> emotionCounts = {
     "Öfkeli": 0,
@@ -46,16 +46,14 @@ class _CameraPageState extends State<CameraPage> {
         enableAudio: false);
     await cameraController!.initialize(); //kamerayı başlat
     isCameraInitialized = true;
-    setState(() {
+    if (!isModelBusy) {
       cameraController!.startImageStream((imageStream) async {
         //kameradan resimleri al
-         if (!isModelBusy) {
-          cameraImage =
-              imageStream; //modele java formatında resim yüklemek için
-          runModel(cameraImage);
-        }
+
+        cameraImage = imageStream; //modele java formatında resim yüklemek için
+        runModel(cameraImage);
       });
-    });
+    }
     return cameraController;
   }
 
@@ -104,10 +102,11 @@ class _CameraPageState extends State<CameraPage> {
             isBackButtonOn = false;
           } else if (emotionCounts[emotion] != null &&
               emotionCounts[emotion]! >= 50) {
+            cameraController!.stopImageStream();
             Navigator.pushReplacementNamed(context, '/suggestionpage',
                 arguments: {"emotion": emotion});
-            //önce sayfayı yönlendir, sonra camera ve modeli kapat - tam tersini sakın yapma
             await stopCameraAndModel();
+            //önce sayfayı yönlendir, sonra camera ve modeli kapat - tam tersini sakın yapma
           }
         }
       } catch (e) {
@@ -121,12 +120,13 @@ class _CameraPageState extends State<CameraPage> {
 
   Future<void> stopCameraAndModel() async {
     await Tflite.close(); //önce modeli durdur
-      try {
-        await cameraController!.stopImageStream();
-        await cameraController!.dispose();
-      } catch (e) {
-        debugPrint("Error stopping camera: $e");
-      } //bundan sonra finally olarak camcontrlr ı null yapıyordun - sakın yapma
+    try {
+      await cameraController!.stopImageStream();
+      await cameraController!.dispose();
+      isCameraInitialized = false;
+    } catch (e) {
+      debugPrint("Error stopping camera: $e");
+    } //bundan sonra finally olarak camcontrlr ı null yapıyordun - sakın yapma
   }
 
   @override
