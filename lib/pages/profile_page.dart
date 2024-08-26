@@ -241,7 +241,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                 );
               } else {
-                return const Center(child: Text("No posts found"));
+                return const Center(child: Text("Bir paylaşım bulunamadı"));
               }
             },
           ),

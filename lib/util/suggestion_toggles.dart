@@ -54,7 +54,7 @@ class _SuggestionTogglesState extends State<SuggestionToggles> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ExpansionTile(
-            title: Text('Model Based Suggestions'),
+            title: Text('Model Tabanlı Etkinlik Önerileri'),
             onExpansionChanged: (bool expanded) {
               setState(() {
                 _modelBasedExpanded = expanded;
@@ -65,7 +65,7 @@ class _SuggestionTogglesState extends State<SuggestionToggles> {
                 : [],
           ),
           ExpansionTile(
-            title: Text('My Decision Based Suggestions'),
+            title: Text('Benim Seçimlerime Göre Etkinlik Önerileri'),
             onExpansionChanged: (bool expanded) {
               setState(() {
                 _myDecisionExpanded = expanded;
@@ -76,7 +76,7 @@ class _SuggestionTogglesState extends State<SuggestionToggles> {
                 : [],
           ),
           ExpansionTile(
-            title: Text('Most Chosen Suggestions'),
+            title: Text('En Çok Tercih Edilen Etkinlikler'),
             onExpansionChanged: (bool expanded) {
               setState(() {
                 _mostChosenExpanded = expanded;

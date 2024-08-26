@@ -21,9 +21,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        title: const Text("AIEmo"),
-      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(25.0),
@@ -78,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _title(){
     return const SizedBox(
-      child: Text("AIEmo",
+      child: Text("Y U Z U G",
       style: TextStyle(
         fontSize: 32,
         fontWeight: FontWeight.bold,

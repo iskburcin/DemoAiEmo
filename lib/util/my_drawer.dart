@@ -40,7 +40,7 @@ class MyDrawer extends StatelessWidget {
                       Icons.person, 
                       color: Theme.of(context).colorScheme.inversePrimary,
                       ),
-                    title: const Text("P R O F İ L E"),
+                    title: const Text("P R O F İ L"),
                     contentPadding: const EdgeInsets.only(left: 35),
                     onTap: (){
                       Navigator.pop(context);

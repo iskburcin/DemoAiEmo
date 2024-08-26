@@ -81,6 +81,8 @@ class _ApprovedActivitiesPageState extends State<ApprovedActivitiesPage> {
             onChanged: (value) {
               comment = value;
             },
+            maxLines: null, // Metin sınırsız satıra bölünebilir
+            keyboardType: TextInputType.multiline,
             decoration: InputDecoration(
                 hintText: "Biraz activitenden bahsetsene",
                 hintStyle:

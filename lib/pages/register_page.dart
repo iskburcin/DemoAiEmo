@@ -35,13 +35,13 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: AppBar(
-        title: const Text("AIEmo"),
-      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          children: [
+            const SizedBox(
+                    height: 100,
+                  ),
             _title(),
             Expanded(
                 child: ListView(
@@ -121,7 +121,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget _title() {
     return const SizedBox(
         child: Text(
-      "AIEmo",
+      "Y U Z U G",
       style: TextStyle(
         fontSize: 32,
         fontWeight: FontWeight.bold,

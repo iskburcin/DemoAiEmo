@@ -17,9 +17,9 @@ class MyListTile extends StatelessWidget {
   final String? actionType;
   @override
   Widget build(BuildContext context) {
-  String formattedDate = DateFormat('MMMM d, yyyy, h:mm a').format(time);
+    String formattedDate = DateFormat('MMMM d, yyyy, h:mm a').format(time);
 
-  IconData getIconBasedOnAction() {
+    IconData getIconBasedOnAction() {
       if (actionType == 'edit') {
         return Icons.edit_note_rounded;
       } else if (actionType == 'publish') {
@@ -35,17 +35,25 @@ class MyListTile extends StatelessWidget {
             color: Theme.of(context).colorScheme.primary,
             borderRadius: BorderRadius.circular(12)),
         child: ListTile(
-          title: Text(title),
+          title: Text(
+            title,
+          ),
           subtitle: subTitle != null
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      subTitle!,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
+                    Flexible(
+                      child: Text(
+                        softWrap: false, //maxLine ve overflow da aynı amaç için tek tek kullanılabilir
+                        // maxLines: 1,
+                        // overflow: TextOverflow.ellipsis,
+                        subTitle!,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
                       ),
                     ),
+                    SizedBox(width: 8),
                     Text(
                       formattedDate,
                       style: TextStyle(
@@ -60,13 +68,12 @@ class MyListTile extends StatelessWidget {
                     color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
-         trailing: actionType != null
+          trailing: actionType != null
               ? IconButton(
                   icon: Icon(getIconBasedOnAction()),
                   onPressed: onEdit,
                 )
-              : null, 
-          
+              : null,
         ),
       ),
     );
