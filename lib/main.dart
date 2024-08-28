@@ -12,6 +12,9 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'pages/approved_activities_page.dart';
+//ilk ekleme
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 List<CameraDescription>? cameras;
 
@@ -41,6 +44,20 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const AuthPage(),
       theme: Provider.of<ThemeProvider>(context).themeData,
+
+      //------------------yeni eklendi
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('tr'), // Spanish
+      ],
+
+      //------------------- üst ara yeni
       routes: {
         '/homepage': (context) => HomePage(),
         '/camerapage': (context) => const CameraPage(),

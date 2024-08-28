@@ -1,0 +1,16 @@
+{
+    "sad": "Sad",
+    "@sad": {
+      "description": "Sad"
+    },
+
+    "angry": "Angry",
+    "@angry": {
+      "description": "Angry"
+    },
+
+    "happy": "Happy",
+    "@happy": {
+      "description": "Happy"
+    }
+  }

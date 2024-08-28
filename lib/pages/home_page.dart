@@ -6,6 +6,7 @@ import 'package:demoaiemo/util/my_textfields.dart';
 import 'package:demoaiemo/util/my_post_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -53,7 +54,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Y U Z U G"),
+        title: Text(AppLocalizations.of(context)!.happy),//const Text("Y U Z U G"),
       ),
       drawer: const MyDrawer(),
       body: Column(
