@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+
 class HomePage extends StatefulWidget {
   HomePage({super.key});
 
@@ -24,7 +25,9 @@ class _HomePageState extends State<HomePage> {
 
   String? selectedMood;
 
-  List<String> moods = ["Öfkeli", "Mutlu", "Üzgün"];
+  List<String> moods = ["Öfkeli","Mutlu", "Üzgün"];//["Öfkeli", "Mutlu", "Üzgün"];
+  
+//Text(AppLocalizations.of(context)!.happy),
 
   void postMessage() async {
     String postMessage = newPostController.text.trim();
@@ -54,7 +57,7 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(AppLocalizations.of(context)!.happy),//const Text("Y U Z U G"),
+        title: const Text("Y U Z U G"),
       ),
       drawer: const MyDrawer(),
       body: Column(
@@ -75,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12)),
-                              labelText: "Nasıl Hissediyorsun?",
+                              labelText: AppLocalizations.of(context)!.howYouFeel,//"Nasıl Hissediyorsun?",
                             ),
                             items: moods.map((String mood) {
                               return DropdownMenuItem<String>(
@@ -89,19 +92,19 @@ class _HomePageState extends State<HomePage> {
                               });
                             },
                           ),
-                          SizedBox(
+                          const SizedBox (
                             height: 5,
                           ),
                           MyTextfield(
-                            hintText: "Hadi bir etkinlik uydur ;)",
+                            hintText: AppLocalizations.of(context)!.createAnctivity,//"Hadi bir etkinlik uydur ;)",
                             obscureText: false,
                             controller: personalActivityController,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                           ),
                           MyTextfield(
-                              hintText: "Bahset bakalım ",
+                              hintText: AppLocalizations.of(context)!.letsHearIt,//"Bahset bakalım ",
                               obscureText: false,
                               controller: newPostController),
                         ],
@@ -122,8 +125,8 @@ class _HomePageState extends State<HomePage> {
                         final combinedPosts = snapshot.data!;
 
                         if (combinedPosts.isEmpty) {
-                          return const Center(
-                              child: Text("Henüz bir paylaşım yok."));
+                          return Center( //Center'dan önce const vardı ama direkt text yapıştırmayınca kaldırmamızı istedi
+                              child: Text(AppLocalizations.of(context)!.noPostYet));//Text("Henüz bir paylaşım yok."));
                         }
                         return Expanded(
                             child: ListView.builder(

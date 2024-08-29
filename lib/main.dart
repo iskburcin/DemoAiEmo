@@ -28,15 +28,26 @@ Future<void> main() async {
   runApp(
     ChangeNotifierProvider(
       create: (context) => ThemeProvider(),
-      child: const MainApp(),
+      child: MainApp(),
     ),
   );
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({
-    super.key,
-  });
+class MainApp extends StatefulWidget {
+  @override
+  State<MainApp> createState() => _MainAppState();
+
+  static _MainAppState? of(BuildContext context) => context.findAncestorStateOfType<_MainAppState>();
+}
+
+class _MainAppState extends State<MainApp> {
+  Locale? _locale;
+
+  void setLocale(Locale value) {
+    setState(() {
+      _locale = value;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +65,10 @@ class MainApp extends StatelessWidget {
       ],
       supportedLocales: const [
         Locale('en'), // English
-        Locale('tr'), // Spanish
+        Locale('tr'), // Türkçe
       ],
+      locale: _locale,
+
 
       //------------------- üst ara yeni
       routes: {

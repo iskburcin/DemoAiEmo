@@ -1,9 +1,12 @@
 {
     "sad": "Üzgün",
-
-
     "angry": "Öfkeli",
+    "happy": "Mutlu",
+    "settings": "Ayarlar",
+    "howYouFeel": "Nasıl hissediyorsun",
+    "createAnctivity": "Hadi bir etkinlik öner",
+    "letsHearIt": "Bahset bakalım!",
+    "noPostYet": "Henüz bir paylaşım yok.",
+    "darkLight": "Açık/Koyu mod"
 
-
-    "happy": "Mutlu"
   }
