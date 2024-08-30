@@ -18,6 +18,7 @@ class MyBotton extends StatelessWidget {
           color: Theme.of(context).colorScheme.primary,
           borderRadius: BorderRadius.circular(12),
         ),
+        height: 70,
         padding: const EdgeInsets.all(25),
         child: Center(
           child: Text(text, style: const TextStyle(

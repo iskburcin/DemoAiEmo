@@ -1,3 +1,4 @@
+import 'package:demoaiemo/language/lang_provider.dart';
 import 'package:demoaiemo/pages/camera_page.dart';
 import 'package:demoaiemo/auth/auth_page.dart';
 import 'package:demoaiemo/pages/home_page.dart';
@@ -26,8 +27,12 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(
+            create: (context) => LanguageProvider()), // Add LanguageProvider
+      ],
       child: MainApp(),
     ),
   );
@@ -37,47 +42,44 @@ class MainApp extends StatefulWidget {
   @override
   State<MainApp> createState() => _MainAppState();
 
-  static _MainAppState? of(BuildContext context) => context.findAncestorStateOfType<_MainAppState>();
+  static _MainAppState? of(BuildContext context) =>
+      context.findAncestorStateOfType<_MainAppState>();
 }
 
 class _MainAppState extends State<MainApp> {
-  Locale? _locale;
-
-  void setLocale(Locale value) {
-    setState(() {
-      _locale = value;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const AuthPage(),
-      theme: Provider.of<ThemeProvider>(context).themeData,
+    return Consumer<LanguageProvider>(
+      builder: (context, languageProvider, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: const AuthPage(),
+          theme: Provider.of<ThemeProvider>(context).themeData,
 
-      //------------------yeni eklendi
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en'), // English
-        Locale('tr'), // Türkçe
-      ],
-      locale: _locale,
+          //------------------yeni eklendi
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en'), // English
+            Locale('tr'), // Türkçe
+          ],
+          locale: languageProvider.locale,
 
-
-      //------------------- üst ara yeni
-      routes: {
-        '/homepage': (context) => HomePage(),
-        '/camerapage': (context) => const CameraPage(),
-        '/profilepage': (context) => ProfilePage(),
-        '/settingpage': (context) => const SettingPage(),
-        '/suggestionpage': (context) => const SuggestionPage(),
-        '/apprrovedactivitiespage': (context) => const ApprovedActivitiesPage(),
+          //------------------- üst ara yeni
+          routes: {
+            '/homepage': (context) => HomePage(),
+            '/camerapage': (context) => const CameraPage(),
+            '/profilepage': (context) => ProfilePage(),
+            '/settingpage': (context) => const SettingPage(),
+            '/suggestionpage': (context) => const SuggestionPage(),
+            '/apprrovedactivitiespage': (context) =>
+                const ApprovedActivitiesPage(),
+          },
+        );
       },
     );
   }
