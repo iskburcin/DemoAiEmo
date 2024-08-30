@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:demoaiemo/database/firestore.dart';
+import 'package:demoaiemo/language/lang_switcher.dart';
 import 'package:demoaiemo/util/my_drawer.dart';
 import 'package:demoaiemo/util/my_list_tile.dart';
 import 'package:demoaiemo/util/my_textfields.dart';
@@ -7,7 +8,6 @@ import 'package:demoaiemo/util/my_post_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -25,10 +25,8 @@ class _HomePageState extends State<HomePage> {
 
   String? selectedMood;
 
-  //-------list buradaydı
+  List<String> moods = ["Öfkeli","Mutlu", "Üzgün"];//["Öfkeli", "Mutlu", "Üzgün"];
   
-late List<String> moods = [AppLocalizations.of(context)!.angry, AppLocalizations.of(context)!.happy, AppLocalizations.of(context)!.sad];
-
 //Text(AppLocalizations.of(context)!.happy),
 
   void postMessage() async {
@@ -60,6 +58,13 @@ late List<String> moods = [AppLocalizations.of(context)!.angry, AppLocalizations
       appBar: AppBar(
         centerTitle: true,
         title: const Text("Y U Z U G"),
+        actions: [
+          Container(
+              padding: EdgeInsets.all(16),
+              child: LanguageSwitcher(
+                showText: false,
+              ))
+        ],
       ),
       drawer: const MyDrawer(),
       body: Column(
@@ -80,7 +85,8 @@ late List<String> moods = [AppLocalizations.of(context)!.angry, AppLocalizations
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12)),
-                              labelText: AppLocalizations.of(context)!.howYouFeel,//"Nasıl Hissediyorsun?",
+                              labelText: AppLocalizations.of(context)!
+                                  .howYouFeel, //"Nasıl Hissediyorsun?",
                             ),
                             items: moods.map((String mood) {
                               return DropdownMenuItem<String>(
@@ -94,11 +100,12 @@ late List<String> moods = [AppLocalizations.of(context)!.angry, AppLocalizations
                               });
                             },
                           ),
-                          const SizedBox (
+                          const SizedBox(
                             height: 5,
                           ),
                           MyTextfield(
-                            hintText: AppLocalizations.of(context)!.createAnctivity,//"Hadi bir etkinlik uydur ;)",
+                            hintText: AppLocalizations.of(context)!
+                                .createAnctivity, //"Hadi bir etkinlik uydur ;)",
                             obscureText: false,
                             controller: personalActivityController,
                           ),
@@ -106,7 +113,8 @@ late List<String> moods = [AppLocalizations.of(context)!.angry, AppLocalizations
                             height: 5,
                           ),
                           MyTextfield(
-                              hintText: AppLocalizations.of(context)!.letsHearIt,//"Bahset bakalım ",
+                              hintText: AppLocalizations.of(context)!
+                                  .letsHearIt, //"Bahset bakalım ",
                               obscureText: false,
                               controller: newPostController),
                         ],
@@ -127,8 +135,10 @@ late List<String> moods = [AppLocalizations.of(context)!.angry, AppLocalizations
                         final combinedPosts = snapshot.data!;
 
                         if (combinedPosts.isEmpty) {
-                          return Center( //Center'dan önce const vardı ama direkt text yapıştırmayınca kaldırmamızı istedi
-                              child: Text(AppLocalizations.of(context)!.noPostYet));//Text("Henüz bir paylaşım yok."));
+                          return Center(
+                              //Center'dan önce const vardı ama direkt text yapıştırmayınca kaldırmamızı istedi
+                              child: Text(AppLocalizations.of(context)!
+                                  .noPostYet)); //Text("Henüz bir paylaşım yok."));
                         }
                         return Expanded(
                             child: ListView.builder(
@@ -149,7 +159,8 @@ late List<String> moods = [AppLocalizations.of(context)!.angry, AppLocalizations
                                     title: [
                                       if (actName != null && actName.isNotEmpty)
                                         "Activite: $actName",
-                                      if (mood != null && mood.isNotEmpty) "Mod: $mood",
+                                      if (mood != null && mood.isNotEmpty)
+                                        "Mod: $mood",
                                       message
                                     ].where((s) => s.isNotEmpty).join('\n'),
                                     subTitle: userEmail,
