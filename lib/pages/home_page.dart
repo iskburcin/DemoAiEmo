@@ -25,8 +25,10 @@ class _HomePageState extends State<HomePage> {
 
   String? selectedMood;
 
-  List<String> moods = ["Öfkeli","Mutlu", "Üzgün"];//["Öfkeli", "Mutlu", "Üzgün"];
+  //-------list buradaydı
   
+late List<String> moods = [AppLocalizations.of(context)!.angry, AppLocalizations.of(context)!.happy, AppLocalizations.of(context)!.sad];
+
 //Text(AppLocalizations.of(context)!.happy),
 
   void postMessage() async {

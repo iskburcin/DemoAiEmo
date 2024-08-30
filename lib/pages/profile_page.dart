@@ -288,7 +288,7 @@ class _ProfilePageState extends State<ProfilePage> {
               const SizedBox(height: 10),
               Row(
                 children: [
-                  Text(
+                  const Text(
                     "Cinsiyetiniz",
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
