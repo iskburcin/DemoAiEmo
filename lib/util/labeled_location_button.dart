@@ -84,13 +84,20 @@ class _LabeledLocationButtonState extends State<LabeledLocationButton> {
                 WidgetStatePropertyAll(Theme.of(context).colorScheme.primary),
           ),
           onPressed: _getCurrentPosition,
-          child: const Text(
+          child:  Text(
             "Konum bilgisine izin ver",
-            style: TextStyle(color: Colors.white38),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface, // Rengi tema moduna göre ayarla
+                ),
           ),
         ),
         const SizedBox(height: 2),
-        Text(_currentAddress ?? "Konuma izin verilmedi.", style: TextStyle(fontSize: 10),),
+        Text(
+          _currentAddress ?? "Konuma izin verilmedi.",
+          style: TextStyle(fontSize: 10),
+        ),
       ],
     );
   }

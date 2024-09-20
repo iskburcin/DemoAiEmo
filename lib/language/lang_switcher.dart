@@ -1,11 +1,12 @@
 import 'package:demoaiemo/language/lang_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LanguageSwitcher extends StatefulWidget {
   final bool showText;
 
-  const LanguageSwitcher({
+   const LanguageSwitcher({
     Key? key,
     this.showText = false,
   }) : super(key: key);
@@ -31,10 +32,10 @@ class _LanguageSwitcherState extends State<LanguageSwitcher> {
                     Icons.language,
                   ),
             hint: widget.showText == true
-                ? const Text(
-                    "Dil Seçenekleri",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
+                ? Text(
+                    AppLocalizations.of(context)!.languages,
+                    style: const TextStyle(
+                    fontWeight: FontWeight.bold,
                     ),
                   )
                 : null,

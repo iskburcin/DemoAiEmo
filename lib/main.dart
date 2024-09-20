@@ -13,7 +13,6 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'pages/approved_activities_page.dart';
-//ilk ekleme
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -55,8 +54,6 @@ class _MainAppState extends State<MainApp> {
           debugShowCheckedModeBanner: false,
           home: const AuthPage(),
           theme: Provider.of<ThemeProvider>(context).themeData,
-
-          //------------------yeni eklendi
           localizationsDelegates: const [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -68,8 +65,6 @@ class _MainAppState extends State<MainApp> {
             Locale('tr'), // Türkçe
           ],
           locale: languageProvider.locale,
-
-          //------------------- üst ara yeni
           routes: {
             '/homepage': (context) => HomePage(),
             '/camerapage': (context) => const CameraPage(),

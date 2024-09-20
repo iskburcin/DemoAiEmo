@@ -40,8 +40,8 @@ class _RegisterPageState extends State<RegisterPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(
-                    height: 100,
-                  ),
+              height: 100,
+            ),
             _title(),
             Expanded(
                 child: ListView(
@@ -196,7 +196,7 @@ class _RegisterPageState extends State<RegisterPage> {
           controller: ageController,
           keyboardType: TextInputType.number,
           obscureText: false,
-          decoration:const InputDecoration(
+          decoration: const InputDecoration(
             labelText: 'Yaşınız',
             border: OutlineInputBorder(),
           ),

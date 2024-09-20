@@ -174,7 +174,7 @@ class _ProfilePageState extends State<ProfilePage> {
         CircleAvatar(
           radius: 64,
           backgroundColor: Theme.of(context).colorScheme.primary,
-          child: const Icon(Icons.person, size: 64, color: Colors.white),
+          child:  Icon(Icons.person, size: 64, color: Theme.of(context).colorScheme.onSurface,),
         ),
         const SizedBox(height: 5),
         Text(
@@ -262,7 +262,7 @@ class _ProfilePageState extends State<ProfilePage> {
               CircleAvatar(
                 radius: 64,
                 backgroundColor: Theme.of(context).colorScheme.primary,
-                child: const Icon(Icons.person, size: 64, color: Colors.white),
+                child:  Icon(Icons.person, size: 64, color: Theme.of(context).colorScheme.onSurface,),
               ),
               const SizedBox(height: 20),
               TextField(

@@ -29,6 +29,7 @@ dependencies:
   intl: any
   flutter_localizations:
     sdk: flutter
+  font_awesome_flutter: ^10.3.0 # Bu ikon kullanmak için eklenmeli
 
 
 
@@ -36,9 +37,15 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.13.1
 
 flutter:
   uses-material-design: true
   generate: true
   assets: 
   - assets/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/icondark.png"  # İkon dosyasının yolunu buraya ekleyin

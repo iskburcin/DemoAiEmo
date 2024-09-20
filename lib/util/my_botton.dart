@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MyBotton extends StatelessWidget {
   final String text;
   final void Function()? onTap;
+  final Icon? icon; // İkon parametresi eklendi
 
   const MyBotton({
     super.key,
     required this.text,
-    required this.onTap});
+    required this.onTap,
+    this.icon, // Opsiyonel ikon parametresi
+  });
+
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -19,12 +25,22 @@ class MyBotton extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         height: 70,
-        padding: const EdgeInsets.all(25),
-        child: Center(
-          child: Text(text, style: const TextStyle(
-            fontWeight: FontWeight.bold 
+        padding: const EdgeInsets.symmetric(horizontal: 25),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (icon != null) ...[
+              icon!, // Eğer ikon varsa göster
+              const SizedBox(width: 10), // İkon ile metin arasında boşluk
+            ],
+            Text(
+              text,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: isDarkMode ? Colors.white : Colors.black, // rengini temaya göre ayarladık
+              ),
             ),
-          ),
+          ],
         ),
       ),
     );

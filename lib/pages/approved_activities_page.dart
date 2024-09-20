@@ -1,3 +1,4 @@
+import 'package:demoaiemo/util/my_background_img.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,49 +22,51 @@ class _ApprovedActivitiesPageState extends State<ApprovedActivitiesPage> {
       appBar: AppBar(
         title: const Text("Onaylanan Etkinlikler"),
       ),
-      body: Column(
-        children: [
-          StreamBuilder<QuerySnapshot>(
-            stream: firestore
-                .collection('Users')
-                .doc(user?.email)
-                .collection('ApprovedActivities')
-                .snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Center(child: CircularProgressIndicator());
-              }
-
-              final approvedActivities = snapshot.data!.docs;
-
-              if (approvedActivities.isEmpty) {
-                return const Center(
-                  child: Text("Onaylanmış bir etkinlik yok."),
+      body: BackgroundContainer(
+        child: Column(
+          children: [
+            StreamBuilder<QuerySnapshot>(
+              stream: firestore
+                  .collection('Users')
+                  .doc(user?.email)
+                  .collection('ApprovedActivities')
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+        
+                final approvedActivities = snapshot.data!.docs;
+        
+                if (approvedActivities.isEmpty) {
+                  return const Center(
+                    child: Text("Onaylanmış bir etkinlik yok."),
+                  );
+                }
+        
+                return Expanded(
+                  child: ListView.builder(
+                    itemCount: approvedActivities.length,
+                    itemBuilder: (context, index) {
+                      final activity = approvedActivities[index];
+                      String activityName = activity['activityName'];
+                      String mood = activity['mood'];
+                      DateTime approvalDate =
+                          DateTime.parse(activity['approvalDate']);
+                      return MyListTile(
+                        title: activityName,
+                        subTitle: mood,
+                        time: approvalDate,
+                        onEdit: () => publishActivity(activityName, mood),
+                        actionType: 'publish',
+                      );
+                    },
+                  ),
                 );
-              }
-
-              return Expanded(
-                child: ListView.builder(
-                  itemCount: approvedActivities.length,
-                  itemBuilder: (context, index) {
-                    final activity = approvedActivities[index];
-                    String activityName = activity['activityName'];
-                    String mood = activity['mood'];
-                    DateTime approvalDate =
-                        DateTime.parse(activity['approvalDate']);
-                    return MyListTile(
-                      title: activityName,
-                      subTitle: mood,
-                      time: approvalDate,
-                      onEdit: () => publishActivity(activityName, mood),
-                      actionType: 'publish',
-                    );
-                  },
-                ),
-              );
-            },
-          ),
-        ],
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

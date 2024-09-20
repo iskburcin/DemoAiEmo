@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:demoaiemo/util/my_background_img.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
@@ -102,47 +103,49 @@ class ActivityPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Activity Page")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text("Aktivite: $suggestion",
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              Text(
-                "Önerilen duygu durumu: $mood",
-                style: const TextStyle(fontSize: 18),
-              ),
-              const Spacer(),
-              Text(
-                getActivitySuggestion(suggestion),
-                style: const TextStyle(fontSize: 18),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     User user = FirebaseAuth.instance.currentUser!;
-              //     _saveUserSelection(context, user.email!, mood, suggestion);
-              //   },
-              //   child: const Text("Bu Seçimi Kaydet"),
-              // ),
-              MyBotton(
-                text: "Etkinliği Onayla",
-                onTap: () => {
-                  _approveActivity(context),
-                  Navigator.pop(context),
-                  Navigator.pushReplacementNamed(
-                      context, '/apprrovedactivitiespage')
-                },
-              )
-            ],
+      body: BackgroundContainer(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Aktivite: $suggestion",
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center),
+                const SizedBox(height: 16),
+                Text(
+                  "Önerilen duygu durumu: $mood",
+                  style: const TextStyle(fontSize: 18),
+                ),
+                const Spacer(),
+                Text(
+                  getActivitySuggestion(suggestion),
+                  style: const TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 16),
+                // ElevatedButton(
+                //   onPressed: () {
+                //     User user = FirebaseAuth.instance.currentUser!;
+                //     _saveUserSelection(context, user.email!, mood, suggestion);
+                //   },
+                //   child: const Text("Bu Seçimi Kaydet"),
+                // ),
+                MyBotton(
+                  text: "Etkinliği Onayla",
+                  onTap: () => {
+                    _approveActivity(context),
+                    Navigator.pop(context),
+                    Navigator.pushReplacementNamed(
+                        context, '/apprrovedactivitiespage')
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),
