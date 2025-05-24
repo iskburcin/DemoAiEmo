@@ -1,6 +1,8 @@
-# DemoAiEmo - Emotion-Based Activity Suggestion App
+# YUZUG (OLD NAME: DemoAiEmo) - Emotion-Based Activity Suggestion App
 
 **DemoAiEmo** is a Flutter-based mobile application that leverages real-time emotion recognition using facial expressions and suggests personalized activities based on the detected emotion and the user's profile information. The application integrates machine learning (TensorFlow Lite) and Firebase to enhance user experience and personalization.
+
+[![YUZUG TANITIM VİDEO](https://img.youtube.com/vi/AfgrdgQ96Os/0.jpg)](https://youtube.com/shorts/AfgrdgQ96Os?feature=share)
 
 ## Features
 - **Real-Time Emotion Detection**: Uses a TensorFlow Lite model to analyze facial expressions (happy, sad, angry) and detect dominant emotions.
